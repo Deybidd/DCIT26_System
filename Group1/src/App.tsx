@@ -5,24 +5,27 @@ import Students from "./section/StudentsPage";
 import Quizzes from "./section/Quizzes";
 import About from "./section/About";
 import Profile from "./section/Profile";
-import './App.css'
+import { UserProvider } from "./context/UserContext";  // ✅ added import
+import "./App.css";
 
 function App() {
   return (
     <BrowserRouter>
-      <div className="flex">
-        <Sidebar />
+      <UserProvider>
+        <div className="flex">
+          <Sidebar />
 
-        <main className="flex-1 p-6">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/students" element={<Students />} />
-            <Route path="/quizzes" element={<Quizzes />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/profile" element={<Profile />} />
-          </Routes>
-        </main>
-      </div>
+          <main className="flex-1 p-6">
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/students" element={<Students />} />
+              <Route path="/quizzes" element={<Quizzes />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/profile" element={<Profile />} />
+            </Routes>
+          </main>
+        </div>
+      </UserProvider>
     </BrowserRouter>
   );
 }
