@@ -25,14 +25,14 @@ const sidebarFooter = [
 
 export default function Sidebar() {
   const [menuOpen, setOpen] = useState(false);
-  const location = useLocation(); 
+  const location = useLocation(); // ⭐ Get current route
 
-  const activeClass = "bg-green-400/50"; 
+  const activeClass = "bg-green-400/50"; // ⭐ Active highlight style
 
   return (
     <nav
       className={`h-screen p-2 bg-[#87FDA8] flex flex-col duration-500 ${
-        menuOpen ? "w-60" : "w-20"
+        menuOpen ? "w-60" : "w-16"
       }`}
     >
       {/* Header */}
@@ -47,7 +47,7 @@ export default function Sidebar() {
 
         <div
           onClick={() => setOpen(!menuOpen)}
-          className="absolute top-3 right-6 cursor-pointer "
+          className="absolute top-3 right-2 cursor-pointer "
         >
           {menuOpen ? <CloseMenu /> : <OpenMenu />}
         </div>
