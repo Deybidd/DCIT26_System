@@ -25,9 +25,9 @@ const sidebarFooter = [
 
 export default function Sidebar() {
   const [menuOpen, setOpen] = useState(false);
-  const location = useLocation(); // ⭐ Get current route
+  const location = useLocation(); 
 
-  const activeClass = "bg-green-400/50"; // ⭐ Active highlight style
+  const activeClass = "bg-green-400/50"; 
 
   return (
     <nav
