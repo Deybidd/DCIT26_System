@@ -9,7 +9,7 @@ export default function InstructorSidebar() {
   };
 
   return (
-    <aside className="w-60 bg-green-400 text-black p-5 flex flex-col justify-between h-screen">
+    <aside className="w-60 bg-green-800 text-white p-5 flex flex-col justify-between h-screen">
       <div>
         <h2 className="text-xl font-bold mb-8">Instructor Panel</h2>
 

@@ -4,24 +4,42 @@ export default function LandingPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center gap-6 bg-gray-100">
-      <h1 className="text-3xl font-bold">Challenge Your Mind, Track Your Progress</h1>
-      <p className="text-gray-600">Choose how you want to continue.</p>
+    <div className="relative h-screen bg-[#FCFDE8] overflow-hidden">
+      
+      {/* Blobs */}
+      <img src="blobs/blob1.svg" className="absolute -top-10 -left-10 w-[700px]" />
+      <img src="blobs/blob3.svg" className="absolute -top-10 -right-10 w-[330px]" />
+      <img src="blobs/blob2.svg" className="absolute -bottom-5 w-full" />
+      <div className="absolute top-6 left-8">
+       <img src="logo/QuizappLogo.svg" className="w-18" />
+</div>
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
 
-      <div className="flex gap-4">
-        <button
-          onClick={() => navigate("/student/login")}
-          className="px-6 py-3 bg-blue-600 text-white rounded-xl"
-        >
-          Login as Student
-        </button>
+        <h1 className="text-7xl font-black">
+          <span className="text-emerald-500/70 font-sans ">Welcome to </span>
+          <span className="text-black font-sans">Quizapp.</span>
+        </h1>
 
-        <button
-          onClick={() => navigate("/instructor/login")}
-          className="px-6 py-3 bg-green-600 text-white rounded-xl"
-        >
-          Login as Instructor
-        </button>
+        <p className="mt-4 font-sans font-medium  text-gray-700">
+          Think fast, choose wisely, and claim your best score today.
+        </p>
+
+        <div className="flex gap-8 mt-8">
+          <button
+            onClick={() => navigate("/student/login")}
+            className="px-8 py-3 bg-emerald-300/70 border-2 text-black font-sans font-medium border-black rounded-xl hover:scale-105 transition"
+          >
+            Login as Student
+          </button>
+
+          <button
+            onClick={() => navigate("/instructor/login")}
+            className="px-8 py-3 bg-emerald-300/70 text-black font-sans font-medium border-2 border-black rounded-xl hover:scale-105 transition"
+          >
+            Login as Instructor
+          </button>
+        </div>
       </div>
     </div>
   );
