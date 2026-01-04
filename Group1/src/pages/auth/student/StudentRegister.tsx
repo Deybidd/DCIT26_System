@@ -81,13 +81,18 @@ export default function StudentRegister() {
             placeholder="Last Name"
           />
 
-          <input
-            type="date"
-            name="birthdate"
-            value={form.birthdate}
-            onChange={handleChange}
-            className="w-full p-2 mb-3 rounded border-2 bg-white"
-          />
+        <input
+  type="date"
+  name="birthdate"
+  value={form.birthdate}
+  onChange={handleChange}
+  className="w-full p-2 mb-3 rounded border-2 border-black bg-white text-black 
+             focus:outline-none focus:ring-0"
+  style={{
+    colorScheme: "black",     
+  }}
+/>
+
 
           <select
             name="yearSection"
@@ -109,8 +114,20 @@ export default function StudentRegister() {
           >
             Next
           </button>
-        </div>
 
+           <p
+          className="text-sm mt-4 text-center text-black cursor-pointer hover:underline"  
+        >
+          Already have an account?{" "} 
+          <span
+          className="text-green-600 cursor-pointer hover:underline font-medium" 
+          onClick={() => navigate("/student/login")}>
+           
+            Login here
+            </span>
+        </p>
+        </div>
+  
         {/* Illustration Panel */}
         <div className="ml-auto bg-[#87FDA8] p-30 m-3 rounded-4xl border-3 border-black ">
           {/* Container SVG background */}
