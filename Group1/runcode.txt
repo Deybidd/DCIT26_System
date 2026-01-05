@@ -1,2 +1,2 @@
-python -m uvicorn test_fastapi:app --reload - run backend server
+python -m uvicorn main:app --reload - run backend server
 npm run dev - run react app/frontend
