@@ -2,7 +2,20 @@ from pydantic import BaseModel
 from typing import List, Optional
 
 class Student(BaseModel):
-    name: str
+    studentNumber: str
+    firstName: str
+    middleName: Optional[str] = None
+    lastName: str
+    birthdate: str
+    yearSection: str
+    email: str
+    password: str
+
+class Instructor(BaseModel):
+    first_name: str
+    middle_name: Optional[str] = None
+    last_name: str
+    course: str
     email: str
     password: str
 

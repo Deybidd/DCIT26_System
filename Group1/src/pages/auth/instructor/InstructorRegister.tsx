@@ -1,125 +1,116 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { api } from "@/api/api";
 
 export default function InstructorRegister() {
   const navigate = useNavigate();
 
-  const [firstName, setFirstName] = useState("");
-  const [middleName, setMiddleName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [course, setCourse] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [form, setForm] = useState({
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    course: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleRegister = async () => {
-    if (!firstName || !lastName || !course || !email || !password || !confirmPassword) {
-      alert("Please fill all required fields.");
+    if (
+      !form.firstName ||
+      !form.lastName ||
+      !form.course ||
+      !form.email ||
+      !form.password ||
+      !form.confirmPassword
+    ) {
+      alert("Please fill all required fields");
       return;
     }
 
-    if (password !== confirmPassword) {
-      alert("Passwords do not match.");
+    if (form.password !== form.confirmPassword) {
+      alert("Passwords do not match");
       return;
     }
 
     try {
-      await api.post("/instructors/register", {
-        first_name: firstName,
-        middle_name: middleName,
-        last_name: lastName,
-        course,
-        email,
-        password,
+      const res = await api.post("/instructors/register", {
+        first_name: form.firstName,
+        middle_name: form.middleName,
+        last_name: form.lastName,
+        course: form.course,
+        email: form.email,
+        password: form.password,
       });
 
-      alert("Registration successful!");
-      navigate("/instructor/login");
-    } catch (err) {
-      console.error(err);
-      alert("Registration failed. Please try again.");
+      if (res.data.message === "Instructor registered successfully") {
+        alert("Registration successful!");
+        navigate("/instructor/login");
+      } else {
+        alert(res.data.message);
+      }
+    } catch {
+      alert("Registration failed");
     }
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-xl shadow w-96">
-        <h2 className="text-2xl text-black font-bold mb-6">Instructor Registration</h2>
+    <div className="relative h-screen bg-[#FCFDE8] overflow-hidden">
+      <img src="/blobs/blob1.svg" className="absolute -top-10 -left-10 w-[560px]" />
 
-        <input
-          className="w-full border border-black text-black p-2 mb-3 rounded"
-          placeholder="First Name"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-        />
+      <div className="absolute top-6 left-8">
+        <img src="/logo/QuizappLogo.svg" className="w-18" />
+      </div>
 
-        <input
-          className="w-full border border-black text-black p-2 mb-3 rounded"
-          placeholder="Middle Name"
-          value={middleName}
-          onChange={(e) => setMiddleName(e.target.value)}
-        />
+      <div className="relative z-10 left-18 flex h-full items-center px-20 font-sans text-black">
+        <div className="w-[400px]">
+          <h2 className="text-2xl font-bold mb-6">Create an account</h2>
 
-        <input
-          className="w-full border border-black text-black p-2 mb-3 rounded"
-          placeholder="Last Name"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-        />
+          <input name="firstName" onChange={handleChange} className="w-full p-2 mb-3 border-2 rounded bg-white" placeholder="First Name" />
+          <input name="middleName" onChange={handleChange} className="w-full p-2 mb-3 border-2 rounded bg-white" placeholder="Middle Name (optional)" />
+          <input name="lastName" onChange={handleChange} className="w-full p-2 mb-3 border-2 rounded bg-white" placeholder="Last Name" />
 
-        <select
-          className="w-full border border-black text-black p-2 mb-3 rounded"
-          value={course}
-          onChange={(e) => setCourse(e.target.value)}
-        >
-          <option value="">Select Course</option>
-          <option value="BSCS">BSCS</option>
-          <option value="BSIT">BSIT</option>
-        </select>
+          <select name="course" onChange={handleChange} className="w-full p-2 mb-3 border-2 rounded bg-white">
+            <option value="">Select Course</option>
+            <option value="BSCS">BSCS</option>
+            <option value="BSIT">BSIT</option>
+          </select>
 
-        <input
-          type="email"
-          className="w-full border border-black text-black p-2 mb-3 rounded"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+          <input name="email" onChange={handleChange} className="w-full p-2 mb-3 border-2 rounded bg-white" placeholder="Email" />
+          <input type="password" name="password" onChange={handleChange} className="w-full p-2 mb-3 border-2 rounded bg-white" placeholder="Password" />
+          <input type="password" name="confirmPassword" onChange={handleChange} className="w-full p-2 mb-6 border-2 rounded bg-white" placeholder="Confirm Password" />
 
-        <input
-          type="password"
-          className="w-full border border-black text-black p-2 mb-3 rounded"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <button onClick={handleRegister} className="w-full bg-[#87FDA8] border-2 border-black py-3 rounded-xl font-semibold">
+            Register
+          </button>
 
-        <input
-          type="password"
-          className="w-full border border-black text-black p-2 mb-4 rounded"
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
+          <p className="text-sm mt-4 text-center text-black">
+            Already have an account?{" "}
+            <span
+              className="text-green-600 cursor-pointer hover:underline font-medium"
+              onClick={() => navigate("/instructor/login")}
+            >
+              Login here
+            </span>
+          </p>
+        </div>
 
+        {/* Back Button */}
         <button
-          onClick={handleRegister}
-          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-500"
+          onClick={() => navigate("http://localhost:5173/")}
+          className="absolute bottom-6 -left-8 z-10 bg-[#87FDA8] bg-opacity-70 hover:bg-opacity-100 text-black font-semibold py-2 px-4 rounded-full shadow border-2 cursor-pointer hover:bg-emerald-400"
         >
-          Register
+          &larr; Back to Landing Page
         </button>
 
-        <p
-          className="text-sm mt-4 text-center text-black cursor-pointer hover:underline"  
-        >
-          Already have an account?{" "} 
-          <span
-          className="text-blue-600 cursor-pointer hover:underline" 
-          onClick={() => navigate("/instructor/login")}>
-           
-            Login here
-            </span>
-        </p>
+        {/* Illustration Panel */}
+        <div className="ml-auto bg-[#87FDA8] p-30 mr-5 rounded-4xl border-3 border-black">
+          <img src="/illustrations/teacher.svg" className="w-[450px]" />
+        </div>
       </div>
     </div>
   );

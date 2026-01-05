@@ -17,7 +17,7 @@ export default function LandingPage() {
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
 
         <h1 className="text-7xl font-black">
-          <span className="text-green-400/70 font-sans ">Welcome to </span>
+          <span className="text-green-400/80 font-sans ">Welcome to </span>
           <span className="text-black font-sans">Quizapp.</span>
         </h1>
 
@@ -28,14 +28,14 @@ export default function LandingPage() {
         <div className="flex gap-8 mt-8">
           <button
             onClick={() => navigate("/student/login")}
-            className="px-8 py-3 bg-[#87FDA8] border-2 text-black font-sans font-medium border-black rounded-xl hover:scale-105 transition"
+            className="px-8 py-3 bg-[#87FDA8] border-2 text-black font-sans font-medium border-black rounded-xl hover:scale-101 transition"
           >
             Login as Student
           </button>
 
           <button
             onClick={() => navigate("/instructor/login")}
-            className="px-8 py-3 bg-[#87FDA8] text-black font-sans font-medium border-2 border-black rounded-xl hover:scale-105 transition"
+            className="px-8 py-3 bg-[#87FDA8] text-black font-sans font-medium border-2 border-black rounded-xl hover:scale-101 transition"
           >
             Login as Instructor
           </button>

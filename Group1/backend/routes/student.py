@@ -6,8 +6,13 @@ router = APIRouter(prefix="/students", tags=["Students"])
 
 @router.post("/register")
 def register_student(student: Student):
+    existing = students_collection.find_one({"email": student.email})
+    if existing:
+        return {"message": "Email already exists"}
+
     students_collection.insert_one(student.dict())
     return {"message": "Student registered successfully"}
+
 
 @router.post("/login")
 def login_student(data: dict):
