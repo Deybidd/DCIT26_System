@@ -18,8 +18,9 @@ import InstructorLayout from "./layout/InstructorLayout";
 import DashboardInstructor from "./pages/instructor/Dashboard";
 import Students from "./pages/instructor/Students";
 import QuizzesInstructor from "./pages/instructor/Quizzes";
+import CreateQuiz from "./pages/instructor/CreateQuiz";
 import ProtectedInstructorRoute from "./pages/auth/instructor/ProtectedInstructorRoute"; // create similar to ProtectedRoute
-
+import InstructorSubjectsPage from "./pages/instructor/InstructorSubjects"; // import the new page
 function App() {
   return (
     <BrowserRouter>
@@ -59,6 +60,8 @@ function App() {
           <Route index element={<DashboardInstructor />} />
           <Route path="students" element={<Students />} />
           <Route path="quizzes" element={<QuizzesInstructor />} />
+            <Route path="quizzes/create" element={<CreateQuiz />} />
+            <Route path="/instructor/subjects" element={<InstructorSubjectsPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

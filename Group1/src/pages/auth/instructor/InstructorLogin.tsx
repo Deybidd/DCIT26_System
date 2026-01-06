@@ -11,10 +11,13 @@ export default function InstructorLogin() {
     try {
       const res = await api.post("/instructors/login", { email, password });
 
-      if (res.data.message === "Login successful") {
-        localStorage.setItem("instructorLoggedIn", "true");
-        navigate("/instructor");
-      } else {
+     if (res.data.message === "Login successful") {
+  localStorage.setItem("instructorLoggedIn", "true");
+  localStorage.setItem("instructorName", res.data.instructor_name);
+  localStorage.setItem("instructorEmail", email);
+  navigate("/instructor");
+}
+ else {
         alert("Invalid credentials");
       }
     } catch {
@@ -72,7 +75,7 @@ export default function InstructorLogin() {
         {/* Back Button */}
         <button
           onClick={() => navigate("http://localhost:5173/")}
-          className="absolute bottom-6 -left-6 z-10 bg-[#87FDA8] bg-opacity-70 hover:bg-opacity-100 text-black font-semibold py-2 px-4 rounded-full shadow border-2 cursor-pointer hover:bg-emerald-400"
+          className="absolute bottom-6 -left-6 z-10 bg-[#87FDA8] bg-opacity-70 hover:bg-opacity-100 text-black font-semibold py-2 px-4 rounded-lg shadow border-2 cursor-pointer hover:bg-emerald-400"
         >
           &larr; Back to Landing Page
         </button>

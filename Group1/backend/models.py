@@ -1,6 +1,9 @@
 from pydantic import BaseModel
 from typing import List, Optional
 
+# ----------------------------
+# STUDENT MODEL
+# ----------------------------
 class Student(BaseModel):
     studentNumber: str
     firstName: str
@@ -11,6 +14,9 @@ class Student(BaseModel):
     email: str
     password: str
 
+# ----------------------------
+# INSTRUCTOR MODEL
+# ----------------------------
 class Instructor(BaseModel):
     first_name: str
     middle_name: Optional[str] = None
@@ -19,12 +25,21 @@ class Instructor(BaseModel):
     email: str
     password: str
 
-class Subject(BaseModel):
-    subject_code: str
-    subject_name: str
-    instructor: str
+# ----------------------------
+# SINGLE SUBJECT MODEL (InstructorSubjects)
+# ----------------------------
+class InstructorSubjects(BaseModel):
+    id: Optional[str] = None         # ID will be generated automatically
+    name: str
+    code: str
+    description: Optional[str] = None
+    number_of_students: int = 0
+    instructor_email: str
     students: List[str] = []
 
+# ----------------------------
+# QUIZ MODELS
+# ----------------------------
 class Question(BaseModel):
     question: str
     choices: List[str]
@@ -36,3 +51,8 @@ class Quiz(BaseModel):
     description: str
     deadline: str
     questions: List[Question]
+    created_by: str               # instructor full name
+    created_at_month: int
+    created_at_year: int
+    graded: bool = False
+    average_score: float = 0

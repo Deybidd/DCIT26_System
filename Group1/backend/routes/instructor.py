@@ -1,11 +1,11 @@
 from fastapi import APIRouter
 from database import instructors_collection, quizzes_collection
-from models import Instructor
+from models import Instructor, Quiz
 from datetime import datetime
 
 router = APIRouter(prefix="/instructors", tags=["Instructors"])
 
-# REGISTER
+# ---------------- REGISTER ----------------
 @router.post("/register")
 def register_instructor(instructor: Instructor):
 
@@ -17,20 +17,41 @@ def register_instructor(instructor: Instructor):
     return {"message": "Instructor registered successfully"}
 
 
-# LOGIN
+# ---------------- LOGIN ----------------
 @router.post("/login")
 def login_instructor(data: dict):
     instructor = instructors_collection.find_one({
         "email": data["email"],
         "password": data["password"]
     })
-
+    
+    
     if instructor:
-        return {"message": "Login successful"}
+        return {
+            "message": "Login successful",
+            "instructor_name": instructor["first_name"] + " " + instructor["last_name"]
+            
+        }
+   
+   
     return {"message": "Invalid credentials"}
 
 
-# DASHBOARD STATS
+# ---------------- CREATE QUIZ ----------------
+@router.post("/quizzes")
+def create_quiz(quiz: dict):
+    quizzes_collection.insert_one(quiz)
+    return {"message": "Quiz published successfully"}
+
+
+# ---------------- GET INSTRUCTOR QUIZZES ----------------
+@router.get("/quizzes/{instructor_name}")
+def get_instructor_quizzes(instructor_name: str):
+    quizzes = list(quizzes_collection.find({"created_by": instructor_name}, {"_id": 0}))
+    return quizzes
+
+
+# ---------------- DASHBOARD STATS ----------------
 @router.get("/dashboard")
 def dashboard_stats():
     now = datetime.now()
