@@ -9,21 +9,21 @@ export default function Dashboard() {
 	}, []);
 
 	return (
-		<div className="flex flex-col h-screen">
-			<h1 className="bg-[#FEFFF4] text-4xl text-black font-extrabold p-9">
+		<div className=" ml-65 flex-col h-screen">
+			<h1 className="bg-[#FEFFF4] font-sans text-3xl text-black font-extrabold p-9">
 				Dashboard
 			</h1>
 			<hr className="h-0.5 w-11/12 bg-black self-center" />
 
 			{/* TOP PART */}
-			<div className="flex-1 grid xl:grid-cols-3 lg:grid-cols-3 md:grid-cols-1 sm:grid-cols-1 bg-white justify-center items-center gap-4 my-10 mx-30 p-4 rounded shadow-lg lg:divide-y-0 lg:divide-x-2 md:divide-y-2 divide-black">
+			<div className="flex-1 grid xl:grid-cols-3 lg:grid-cols-3 md:grid-cols-1 sm:grid-cols-1 bg-white justify-center items-center gap-4 my-4 mx-20 p-1 h-60 rounded-2xl shadow-lg lg:divide-y-0 lg:divide-x-2 md:divide-y-2 divide-black">
 				{/* STATS */}
 				{/* SUBMITTED QUIZZES */}
-				<div className="bg-white text-black p-4 flex flex-col justify-between text-center relative min-h-75">
+				<div className=" text-black p-4  flex flex-col justify-between text-center relative h-50">
 					<div className="flex-1 flex items-center justify-center">
 						<div className="relative w-3/5 flex justify-center">
 							<svg
-								className="w-full h-auto"
+								className="w-full h-30"
 								viewBox="0 0 149 113"
 								fill="none"
 								xmlns="http://www.w3.org/2000/svg"
@@ -35,23 +35,23 @@ export default function Dashboard() {
 								/>
 							</svg>
 							<div className="absolute inset-0 flex items-center justify-center">
-								<h1 className="text-4xl sm:text-6xl md:text-6xl lg:text-4xl xl:text-8xl font-sans font-extrabold text-black px-3">
+								<h1 className="text-7xl  font-sans font-extrabold text-black px-3">
 									{quizzes.length}
 								</h1>
 							</div>
 						</div>
 					</div>
-					<h1 className="text-black text-lg sm:text-xl lg:text-2xl font-sans font-bold">
+					<h1 className="text-black text-lg font-sans font-bold">
 						Submitted Quizzes this Month
 					</h1>
 				</div>
 
 				{/* MISSING QUIZZES */}
-				<div className="bg-white text-black p-4 flex flex-col justify-between text-center relative min-h-75">
+				<div className=" text-black p-4  flex flex-col justify-between text-center relative h-50">
 					<div className="flex-1 flex items-center justify-center">
 						<div className="relative w-3/5 flex justify-center">
 							<svg
-								className="w-full h-auto"
+								className="w-full h-30"
 								viewBox="0 0 133 113"
 								fill="none"
 								xmlns="http://www.w3.org/2000/svg"
@@ -63,23 +63,23 @@ export default function Dashboard() {
 								/>
 							</svg>
 							<div className="absolute inset-0 flex items-center justify-center">
-								<h1 className="text-4xl sm:text-6xl md:text-6xl lg:text-4xl xl:text-8xl font-sans font-extrabold text-black px-3">
+								<h1 className="text-7xl font-sans font-extrabold text-black px-3">
 									0
 								</h1>
 							</div>
 						</div>
 					</div>
-					<h1 className="text-black text-lg sm:text-xl lg:text-2xl font-sans font-bold">
+					<h1 className="text-black text-lg font-sans font-bold">
 						Missing Quizzes this Month
 					</h1>
 				</div>
 
 				{/* PERFORMANCE */}
-				<div className="bg-white text-black p-4 flex flex-col justify-between text-center relative min-h-75">
+				<div className=" text-black p-4  flex flex-col justify-between text-center relative h-50">
 					<div className="flex-1 flex items-center justify-center">
 						<div className="relative w-11/12 flex justify-center">
 							<svg
-								className="w-full h-auto"
+								className="w-full h-30"
 								viewBox="0 0 230 118"
 								fill="none"
 								xmlns="http://www.w3.org/2000/svg"
@@ -91,35 +91,35 @@ export default function Dashboard() {
 								/>
 							</svg>
 							<div className="absolute inset-0 flex items-center justify-center">
-								<h1 className="text-4xl sm:text-6xl md:text-6xl lg:text-4xl xl:text-8xl font-sans font-extrabold text-black px-3">
+								<h1 className="text-7xl font-sans font-extrabold text-black px-3">
 									87%
 								</h1>
 							</div>
 						</div>
 					</div>
-					<h1 className="text-black text-lg xl:text-2xl lg:text-2xl sm:text-xl font-sans font-bold">
+					<h1 className="text-black text-lg font-sans font-bold">
 						Overall Performance Rate this Month
 					</h1>
 				</div>
 			</div>
 
 			{/* BOTTOM PART */}
-			<div className="flex-1 grid xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 justify-center gap-30 my-10 mx-30 p-4">
+			<div className="flex-1 font-sans grid xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 justify-center gap-20 my-10 mx-30 p-4">
 				{/* MISSED QUIZZES */}
 				<div className="flex flex-col text-black">
-					<h1 className="pb-4 text-3xl">Missed Quizzes</h1>
+					<h1 className="pb-4 font-bold text-2xl">Missed Quizzes</h1>
 					{/* MISSED QUIZZES CONTAINER */}
-					<div className="flex-1 bg-white grid grid-cols-1 rounded shadow-lg">
-						<div className="flex justify-between px-4 pt-4">
-							<h1># of Quizzes</h1>
+					<div className="flex-1 font-medium bg-white grid grid-cols-1 rounded-2xl p-2 shadow-lg">
+						<div className="flex text-sm justify-between px-5 pt-3">
+							<h1>No. of Missed Quizzes</h1>
 							<a href="" className="underline cursor-pointer">
 								See More
 							</a>
 						</div>
 						<div className="p-4">
-							<ul className="grid grid-cols-1 gap-4">
-								<li className="grid grid-cols-1 gap-6 bg-[#FFE6B1] p-2 rounded shadow-lg">
-									<div className="flex justify-between">
+							<ul className="grid grid-cols-1 gap-3">
+								<li className="grid grid-cols-1 gap-6 bg-[#FFE6B1] p-2 rounded shadow-sm">
+									<div className="flex font-bold justify-between">
 										<h1>Quiz 1 Sample</h1>
 										<h1>July 23 - July 30</h1>
 									</div>
@@ -139,8 +139,8 @@ export default function Dashboard() {
 										</svg>
 									</div>
 								</li>
-								<li className="grid grid-cols-1 gap-6 bg-[#FFA0E4] p-2 rounded shadow-lg">
-									<div className="flex justify-between">
+								<li className="grid grid-cols-1 gap-6 bg-[#FFA0E4] p-2 rounded shadow-sm">
+									<div className="flex font-bold justify-between">
 										<h1>Quiz 2 Sample</h1>
 										<h1>July 23 - July 30</h1>
 									</div>
@@ -167,9 +167,9 @@ export default function Dashboard() {
 
 				{/* REMINDERS */}
 				<div className="flex flex-col text-black">
-					<h1 className="pb-4 text-3xl">Reminders</h1>
+					<h1 className="pb-4 font-bold text-2xl">Reminders</h1>
 					{/* REMINDERS CONTAINER */}
-					<div className="flex-1 bg-white grid grid-cols-1 rounded shadow-lg">
+					<div className="flex-1 bg-white grid grid-cols-1 rounded-2xl p-2 shadow-lg">
 						<ul className="grid grid-cols-1 gap-4 p-4">
 							<li className="flex items-center gap-4">
 								<svg
@@ -186,7 +186,7 @@ export default function Dashboard() {
 									/>
 								</svg>
 								<div className="grid grid-cols-1">
-									<h1 className="text-[1.25rem]">Reminder Title!</h1>
+									<h1 className="text-[1.25rem] font-semibold">Reminder Title!</h1>
 									<h1>
 										*Quiz Name* deadline is near. Please submit your answers as
 										soon as possible. Thank you!
@@ -219,7 +219,7 @@ export default function Dashboard() {
 								</svg>
 
 								<div className="grid grid-cols-1">
-									<h1 className="text-[1.25rem]">Reminder Title!</h1>
+									<h1 className="text-[1.25rem] font-semibold">Reminder Title!</h1>
 									<h1>
 										*Quiz Name* deadline is near. Please submit your answers as
 										soon as possible. Thank you!

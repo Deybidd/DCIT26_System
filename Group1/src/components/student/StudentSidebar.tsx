@@ -9,7 +9,7 @@ export default function StudentSidebar() {
 };
 
   return (
-		<aside className="w-60 bg-[#87FDA8] text-white p-5 flex flex-col justify-between h-screen">
+		<aside className=" fixed mr-100 w-60 bg-[#87FDA8] text-white p-5 flex flex-col justify-between h-screen">
 			<div>
 				<h2 className="text-3xl text-black font-extrabold font-sans mb-8 text-center">
 					Quiz <br /> app.

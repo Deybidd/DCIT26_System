@@ -89,11 +89,11 @@ export default function StudentSubjects() {
 
 
   return (
-    <div className="p-6">
+    <div className="p-6 ml-65 flex-col h-screen">
       <h1 className="text-2xl text-black font-bold mb-4">My Subjects</h1>
 
       {/* Enrollment Section */}
-      <div className="mb-6 p-4 text-black bg-white rounded shadow flex flex-col gap-2">
+      <div className="mb-6 p-4 text-black bg-white rounded shadow flex flex-col w-100 gap-2">
         <h2 className="font-semibold">Enroll in a Subject</h2>
         <input
           type="text"

@@ -63,7 +63,7 @@ export default function StudentQuizzes() {
   );
 
   return (
-    <div className="p-6 text-black">
+    <div className="ml-65 flex-col h-screen p-6 text-black">
       <h1 className="text-2xl font-bold mb-6 text-black">Available Quizzes</h1>
 
       {visibleQuizzes.length === 0 ? (
