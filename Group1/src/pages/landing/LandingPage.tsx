@@ -7,11 +7,11 @@ export default function LandingPage() {
     <div className="relative h-screen bg-[#FCFDE8] overflow-hidden">
       
       {/* Blobs */}
-      <img src="blobs/blob1.svg" className="absolute -top-10 -left-10 w-[700px]" />
-      <img src="blobs/blob3.svg" className="absolute -top-10 -right-10 w-[330px]" />
-      <img src="blobs/blob2.svg" className="absolute -bottom-5 w-full" />
+      <img src="blobs/blob1.svg" alt="" className="absolute -top-10 -left-10 w-[700px]" />
+      <img src="blobs/blob3.svg" alt="" className="absolute -top-10 -right-10 w-[330px]" />
+      <img src="blobs/blob2.svg" alt="" className="absolute -bottom-5 w-full" />
       <div className="absolute top-6 left-8">
-       <img src="logo/QuizappLogo.svg" className="w-18" />
+       <img src="logo/QuizappLogo.svg" alt="" className="w-18" />
 </div>
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
