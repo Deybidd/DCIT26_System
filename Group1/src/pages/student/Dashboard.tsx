@@ -16,7 +16,7 @@ export default function Dashboard() {
 			<hr className="h-0.5 w-full bg-black self-center" />
 
 			{/* TOP PART */}
-			<div className="flex-1 grid xl:grid-cols-3 lg:grid-cols-3 md:grid-cols-1 sm:grid-cols-1 bg-white justify-center items-center gap-4 my-4 mx-20 p-1 h-60 rounded-2xl shadow-lg lg:divide-y-0 lg:divide-x-2 md:divide-y-2 divide-black">
+			<div className="flex-1 grid xl:grid-cols-3 lg:grid-cols-3 md:grid-cols-1 sm:grid-cols-1 bg-white justify-center items-center gap-4 my-4 mx-20 h-60 rounded-2xl shadow-lg lg:divide-y-0 lg:divide-x-2 md:divide-y-2 divide-black">
 				{/* STATS */}
 				{/* SUBMITTED QUIZZES */}
 				<div className=" text-black p-4  flex flex-col justify-between text-center relative h-50">
