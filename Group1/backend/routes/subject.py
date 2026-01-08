@@ -5,7 +5,7 @@ import uuid
 
 router = APIRouter(prefix="/subjects", tags=["Subjects"])
 
-# Create subject
+
 @router.post("/")
 def create_subject(subject: InstructorSubjects):
     subject_dict = subject.dict()
@@ -16,7 +16,6 @@ def create_subject(subject: InstructorSubjects):
     subjects_collection.insert_one(subject_dict)
     return {"message": "Subject created", "subject_id": subject_dict["id"]}
 
-# Get subjects
 @router.get("/")
 def get_subjects(instructorEmail: str = None):
     query = {}
@@ -25,7 +24,7 @@ def get_subjects(instructorEmail: str = None):
     subjects = list(subjects_collection.find(query, {"_id": 0}))
     return subjects
 
-# Update subject
+
 @router.put("/{subject_id}")
 def update_subject(subject_id: str, updated_subject: InstructorSubjects):
     result = subjects_collection.update_one(

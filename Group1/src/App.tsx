@@ -19,6 +19,7 @@ import DashboardInstructor from "./pages/instructor/Dashboard";
 import Students from "./pages/instructor/Students";
 import QuizzesInstructor from "./pages/instructor/Quizzes";
 import CreateQuiz from "./pages/instructor/CreateQuiz";
+import InstructorEditQuiz from "./pages/instructor/InstructorEditQuiz"; 
 import ProtectedInstructorRoute from "./pages/auth/instructor/ProtectedInstructorRoute"; // create similar to ProtectedRoute
 import InstructorSubjectsPage from "./pages/instructor/InstructorSubjects"; // import the new page
 function App() {
@@ -62,6 +63,7 @@ function App() {
           <Route path="quizzes" element={<QuizzesInstructor />} />
             <Route path="quizzes/create" element={<CreateQuiz />} />
             <Route path="/instructor/subjects" element={<InstructorSubjectsPage />} />
+            <Route path="/instructor/quizzes/edit/:id" element={<InstructorEditQuiz />} />
         </Route>
       </Routes>
     </BrowserRouter>
