@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from database import subjects_collection
+from database import subjects_collection, students_collection
 from models import InstructorSubjects
 import uuid
 
@@ -55,14 +55,23 @@ def enroll_student(subject_id: str, student: dict):
     if not subject:
         raise HTTPException(status_code=404, detail="Subject not found")
 
+    # Validate that the student exists
+    student_id = student.get("student_id")
+    if not student_id:
+        raise HTTPException(status_code=400, detail="Student ID required")
+    
+    student_doc = students_collection.find_one({"studentNumber": student_id})
+    if not student_doc:
+        raise HTTPException(status_code=404, detail="Student not found")
+
     students = subject.get("students", [])
-    if student["student_email"] in students:
+    if student_id in students:
         return {"message": "Already enrolled"}
 
     if len(students) >= 60:
         raise HTTPException(status_code=400, detail="Subject is full")
 
-    students.append(student["student_email"])
+    students.append(student_id)
     subjects_collection.update_one(
         {"id": subject_id},
         {"$set": {"students": students, "number_of_students": len(students)}}
@@ -76,13 +85,82 @@ def unenroll_student(subject_id: str, student: dict):
     if not subject:
         raise HTTPException(status_code=404, detail="Subject not found")
 
+    # Validate that the student exists
+    student_id = student.get("student_id")
+    if not student_id:
+        raise HTTPException(status_code=400, detail="Student ID required")
+    
+    student_doc = students_collection.find_one({"studentNumber": student_id})
+    if not student_doc:
+        raise HTTPException(status_code=404, detail="Student not found")
+
     students = subject.get("students", [])
-    if student["student_email"] not in students:
+    if student_id not in students:
         raise HTTPException(status_code=400, detail="You are not enrolled in this subject")
 
-    students.remove(student["student_email"])
+    # Remove the student ID
+    students.remove(student_id)
+    
     subjects_collection.update_one(
         {"id": subject_id},
         {"$set": {"students": students, "number_of_students": len(students)}}
     )
     return {"message": "Successfully unenrolled"}
+
+# Get students enrolled in a subject
+@router.get("/{subject_code}/students")
+def get_students(subject_code: str):
+    subject = subjects_collection.find_one({"code": subject_code}, {"_id": 0})
+    if not subject:
+        raise HTTPException(status_code=404, detail="Subject not found")
+    
+    # Get the list of enrolled student IDs/emails
+    enrolled_items = subject.get("students", [])
+    
+    # Fetch student details for each enrolled item
+    students_details = []
+    for item in enrolled_items:
+        # Try looking up by studentNumber first (new format)
+        student = students_collection.find_one({"studentNumber": item}, {"_id": 0, "password": 0})
+        if not student:
+            # Try looking up by email (old format for backward compatibility)
+            student = students_collection.find_one({"email": item}, {"_id": 0, "password": 0})
+        if student:
+            # Format the student name
+            full_name = f"{student.get('firstName', '')} {student.get('middleName', '')} {student.get('lastName', '')}".strip()
+            students_details.append({
+                "name": full_name,
+                "yearSection": student.get("yearSection", "-")
+            })
+    
+    return students_details
+
+# Get top achievers for a subject
+@router.get("/{subject_code}/top-achievers")
+def get_top_achievers(subject_code: str):
+    subject = subjects_collection.find_one({"code": subject_code}, {"_id": 0})
+    if not subject:
+        raise HTTPException(status_code=404, detail="Subject not found")
+    
+    # Get the list of enrolled student IDs/emails
+    enrolled_items = subject.get("students", [])
+    
+    # For now, return students with mock scores
+    # In a real implementation, this would calculate actual quiz scores
+    top_achievers = []
+    for i, item in enumerate(enrolled_items[:5]):  # Limit to top 5
+        # Try looking up by studentNumber first, then by email
+        student = students_collection.find_one({"studentNumber": item}, {"_id": 0, "password": 0})
+        if not student:
+            student = students_collection.find_one({"email": item}, {"_id": 0, "password": 0})
+        if student:
+            full_name = f"{student.get('firstName', '')} {student.get('middleName', '')} {student.get('lastName', '')}".strip()
+            # Mock score - in reality this would be calculated from quiz results
+            mock_score = 95 - (i * 5)  # Decreasing scores: 95, 90, 85, etc.
+            top_achievers.append({
+                "id": student.get("studentNumber", item),  # Use studentNumber if available, otherwise the item itself
+                "name": full_name,
+                "score": mock_score
+            })
+    
+    return top_achievers

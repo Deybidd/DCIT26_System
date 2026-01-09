@@ -59,7 +59,7 @@ export default function InstructorSubjectsPage() {
 
   return (
       <div className=" font-sans text-black -mt-10">
-        <h1 className="text-2xl font-bold mb-4 bg-white p-8 px-20 border-b-2">  Subjects</h1>
+        <h1 className="text-2xl ml-60 font-bold mb-4 bg-white mt-5 p-8 px-20 border-b-2">  Subjects</h1>
      <div className="bg-white h-130 w-250 absolute left-99 p-6 rounded-2xl shadow-md border mt-10">
        
 
@@ -114,13 +114,6 @@ export default function InstructorSubjectsPage() {
       <p className="ml-18 text-sm">Students Enrolled: {s.number_of_students}</p>
     </div>
     
-       <button
-        onClick={() => setShowForm(!showForm)}
-        className="fixed bottom-6 right-6 bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700"
-      >
-        {showForm ? "Cancel" : "Add Subject"}
-      </button>
-
   </li>
 ))}
     
@@ -128,6 +121,12 @@ export default function InstructorSubjectsPage() {
       )}
 
       {/* Add Subject Button */}
+      <button
+        onClick={() => setShowForm(!showForm)}
+        className="fixed bottom-6 right-6 bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700"
+      >
+        {showForm ? "Cancel" : "Add Subject"}
+      </button>
     
       {showForm && (
         <div className="fixed bottom-20 right-6 w-80 bg-white p-4 border rounded shadow-md z-50">
@@ -189,7 +188,7 @@ export default function InstructorSubjectsPage() {
               type="submit"
               className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
             >
-              Create
+              Create 
             </button>
 
             {message && <p className="text-sm text-green-600 mt-1">{message}</p>}

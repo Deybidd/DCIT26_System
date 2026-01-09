@@ -9,23 +9,34 @@ interface Subject {
   students: string[];
 }
 
+interface Question {
+  question: string;
+  type: "mc" | "id";
+  choices: string[];
+  answer: string;
+}
+
 export default function InstructorCreateQuiz() {
   const navigate = useNavigate();
-  const instructorName = localStorage.getItem("instructorName") || "";
+  const instructorEmail = localStorage.getItem("instructorEmail") || "";
 
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [selectedSubject, setSelectedSubject] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
-  const [questions, setQuestions] = useState<any[]>([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [timerMinutes, setTimerMinutes] = useState<number>(0); // NEW: Timer state
+  const [maxAttempts, setMaxAttempts] = useState<number>(0); // number of attempts
+  const [maxTabSwitches, setMaxTabSwitches] = useState<number>(0);
 
-  // Fetch subjects created by instructor
+  useEffect(() => {
+    fetchSubjects();
+  }, []);
+
   const fetchSubjects = async () => {
     try {
-      const res = await api.get(
-        `/subjects?instructorEmail=${localStorage.getItem("instructorEmail")}`
-      );
+      const res = await api.get(`/subjects?instructorEmail=${instructorEmail}`);
       setSubjects(res.data);
       if (res.data.length > 0) setSelectedSubject(res.data[0].code);
     } catch (err) {
@@ -33,21 +44,19 @@ export default function InstructorCreateQuiz() {
     }
   };
 
-  useEffect(() => {
-    fetchSubjects();
-  }, []);
-
   const addQuestion = () => {
-    setQuestions([
-      ...questions,
+    setQuestions((prev) => [
+      ...prev,
       { question: "", type: "mc", choices: ["", ""], answer: "" },
     ]);
   };
 
   const addChoice = (qIndex: number) => {
-    const copy = [...questions];
-    copy[qIndex].choices.push("");
-    setQuestions(copy);
+    setQuestions((prev) => {
+      const copy = [...prev];
+      copy[qIndex].choices.push("");
+      return copy;
+    });
   };
 
   const handlePublish = async () => {
@@ -57,26 +66,32 @@ export default function InstructorCreateQuiz() {
     }
 
     try {
-      const res = await api.post("/instructors/quizzes", {
-        title,
-        description,
-        deadline,
-        subject_code: selectedSubject,
-        created_by: instructorName,
-        created_at_month: new Date().getMonth() + 1,
-        created_at_year: new Date().getFullYear(),
-        graded: false,
-        average_score: 0,
-        questions,
-      });
+      const date = new Date(deadline);
+      const formattedDeadline = `${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear()}`;
 
-      if (res.data.message === "Quiz published successfully") {
-        alert("Quiz published!");
-        navigate("/instructor/quizzes");
-      }
-    } catch (err) {
-      alert("Failed to publish quiz");
-      console.error(err);
+      const payload = {
+  title,
+  description,
+  deadline: formattedDeadline,
+  subject_code: selectedSubject,
+  instructor_email: instructorEmail,
+  questions: questions.map((q) => ({
+    question: q.question,
+    choices: q.type === "mc" ? q.choices.filter((c) => c.trim()) : [],
+    answer: q.answer,
+    type: q.type === "mc" ? "multiple_choice" : "identification",
+  })),
+  timer_minutes: timerMinutes > 0 ? timerMinutes : undefined,
+  max_attempts: maxAttempts > 0 ? maxAttempts : undefined,
+  max_tab_switches: maxTabSwitches > 0 ? maxTabSwitches : undefined,
+};
+      await api.post("/quizzes", payload);
+
+      alert("Quiz published successfully!");
+      navigate("/instructor/quizzes");
+    } catch (err: any) {
+      console.error("Failed to publish quiz", err.response?.data || err);
+      alert(err.response?.data?.detail || "Failed to publish quiz.");
     }
   };
 
@@ -84,7 +99,6 @@ export default function InstructorCreateQuiz() {
     <div className="p-10 bg-[#87FDA8] w-150 text-black rounded-2xl shadow-md absolute top-20 left-3/5 transform -translate-x-2/4">
       <h1 className="text-2xl font-bold mb-4">Create Quiz</h1>
 
-      {/* Subject selection */}
       <label className="font-medium mb-1 block">Select Subject</label>
       <select
         value={selectedSubject}
@@ -112,18 +126,47 @@ export default function InstructorCreateQuiz() {
         onChange={(e) => setDescription(e.target.value)}
       />
 
-      {/* Deadline label */}
       <label className="font-medium mb-1 block">Deadline</label>
       <input
         type="date"
-        className="border-2 p-2 rounded mb-6 w-full bg-white"
+        className="border-2 p-2 rounded mb-3 w-full bg-white"
+        style={{ colorScheme: "black" }}
         value={deadline}
         onChange={(e) => setDeadline(e.target.value)}
       />
 
-      {/* Questions */}
+      <label className="font-medium mb-1 block">Timer (Minutes)</label>
+      <input
+        type="number"
+        min={0}
+        value={timerMinutes}
+        onChange={(e) => setTimerMinutes(Number(e.target.value))}
+        className="border-2 p-2 rounded mb-6 w-full bg-white"
+        placeholder="Enter timer in minutes"
+      />
+
+      <label className="font-medium mb-1 block">Maximum Attempts (Optional)</label>
+<input
+  type="number"
+  min={0}
+  value={maxAttempts}
+  onChange={(e) => setMaxAttempts(Number(e.target.value))}
+  className="border-2 p-2 rounded mb-3 w-full bg-white"
+  placeholder="Enter max attempts for this quiz"
+/>
+
+<label className="font-medium mb-1 block">Maximum Tab Switches (Optional)</label>
+<input
+  type="number"
+  min={0}
+  value={maxTabSwitches}
+  onChange={(e) => setMaxTabSwitches(Number(e.target.value))}
+  className="border-2 p-2 rounded mb-6 w-full bg-white"
+  placeholder="Enter number of allowed tab switches"
+/>
+
       {questions.map((q, i) => (
-        <div key={i} className="bg-white p-4 rounded-lg border-2 mb-4 bg-white">
+        <div key={i} className="bg-white p-4 rounded-lg border-2 mb-4">
           <input
             className="w-full border-2 rounded p-2 mb-2"
             placeholder="Question"
@@ -140,7 +183,7 @@ export default function InstructorCreateQuiz() {
             value={q.type}
             onChange={(e) => {
               const copy = [...questions];
-              copy[i].type = e.target.value;
+              copy[i].type = e.target.value as "mc" | "id";
               setQuestions(copy);
             }}
           >
@@ -148,28 +191,33 @@ export default function InstructorCreateQuiz() {
             <option value="id">Identification</option>
           </select>
 
-          {q.type === "mc" &&
-            q.choices.map((choice: string, ci: number) => (
-              <div key={ci} className="flex gap-2 mb-1">
+          {q.type === "mc" && (
+            <>
+              {q.choices.map((choice, ci) => (
                 <input
-                  className="flex-1 border-2 rounded p-2"
+                  key={ci}
+                  className="w-full border-2 rounded p-2 mb-1"
                   placeholder={`Choice ${ci + 1}`}
                   value={choice}
                   onChange={(e) => {
-                    const copy = [...questions];
-                    copy[i].choices[ci] = e.target.value;
-                    setQuestions(copy);
+                    setQuestions((prev) => {
+                      const copy = [...prev];
+                      copy[i].choices[ci] = e.target.value;
+                      return copy;
+                    });
                   }}
                 />
-                <button
-                  type="button"
-                  className="bg-[#87FDA8] text-black font-medium px-2 rounded border-2 border-black"
-                  onClick={() => addChoice(i)}
-                >
-                  + Choice
-                </button>
-              </div>
-            ))}
+              ))}
+
+              <button
+                type="button"
+                onClick={() => addChoice(i)}
+                className="bg-[#87FDA8] text-black font-medium px-3 py-1 rounded border-2 border-black mt-2"
+              >
+                + Add Choice
+              </button>
+            </>
+          )}
 
           <input
             className="w-full border-2 rounded p-2 mt-2"

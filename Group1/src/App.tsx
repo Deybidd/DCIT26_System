@@ -9,6 +9,7 @@ import StudentLayout from "./layout/StudentLayout";
 import Dashboard from "./pages/student/Dashboard";
 import Subjects from "./pages/student/Subjects";
 import Quizzes from "./pages/student/Quizzes";
+import TakeQuiz from "./pages/student/TakeQuiz";
 import ProtectedRoute from "./pages/auth/student/ProtectedRoute";
 
 // Instructor imports
@@ -19,7 +20,7 @@ import DashboardInstructor from "./pages/instructor/Dashboard";
 import Students from "./pages/instructor/Students";
 import QuizzesInstructor from "./pages/instructor/Quizzes";
 import CreateQuiz from "./pages/instructor/CreateQuiz";
-import InstructorEditQuiz from "./pages/instructor/InstructorEditQuiz"; 
+import InstructorEditQuiz from "./pages/instructor/InstructorEditQuiz";
 import ProtectedInstructorRoute from "./pages/auth/instructor/ProtectedInstructorRoute"; // create similar to ProtectedRoute
 import InstructorSubjectsPage from "./pages/instructor/InstructorSubjects"; // import the new page
 function App() {
@@ -44,11 +45,13 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="subjects" element={<Subjects />} />
           <Route path="quizzes" element={<Quizzes />} />
+            
         </Route>
 
         {/* Instructor routes */}
         <Route path="/instructor/login" element={<InstructorLogin />} />
         <Route path="/instructor/register" element={<InstructorRegister />} />
+        <Route path="/student/quiz/:quizId" element={<TakeQuiz />} />
 
         <Route
           path="/instructor"

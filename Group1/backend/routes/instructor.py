@@ -8,7 +8,7 @@ router = APIRouter(prefix="/instructors", tags=["Instructors"])
 # ---------------- REGISTER ----------------
 @router.post("/register")
 def register_instructor(instructor: Instructor):
-
+    # Check for existing email
     existing = instructors_collection.find_one({"email": instructor.email})
     if existing:
         return {"message": "Email already registered"}
@@ -37,18 +37,7 @@ def login_instructor(data: dict):
     return {"message": "Invalid credentials"}
 
 
-# ---------------- CREATE QUIZ ----------------
-@router.post("/quizzes")
-def create_quiz(quiz: dict):
-    quizzes_collection.insert_one(quiz)
-    return {"message": "Quiz published successfully"}
 
-
-# ---------------- GET INSTRUCTOR QUIZZES ----------------
-@router.get("/quizzes/{instructor_name}")
-def get_instructor_quizzes(instructor_name: str):
-    quizzes = list(quizzes_collection.find({"created_by": instructor_name}, {"_id": 0}))
-    return quizzes
 
 
 # ---------------- DASHBOARD STATS ----------------
@@ -89,4 +78,26 @@ def dashboard_stats():
         "total_quizzes": total_quizzes,
         "unchecked_quizzes": unchecked_quizzes,
         "performance_rate": performance_rate
+    }
+
+# ---------------- DASHBOARD PANELS ----------------
+@router.get("/dashboard/panels")
+def dashboard_panels():
+    now = datetime.now()
+    
+    # Get scheduled quizzes (future deadlines)
+    scheduled_quizzes = list(quizzes_collection.find(
+        {"deadline": {"$gt": now.isoformat()}},
+        {"_id": 0, "id": 1, "title": 1, "deadline": 1, "subject_code": 1}
+    ).limit(5))
+    
+    # Get reminders (could be quizzes due soon, etc.)
+    reminders = [
+        {"message": "Grade pending quizzes", "type": "warning"},
+        {"message": "Review student performance", "type": "info"}
+    ]
+    
+    return {
+        "scheduled_quizzes": scheduled_quizzes,
+        "reminders": reminders
     }

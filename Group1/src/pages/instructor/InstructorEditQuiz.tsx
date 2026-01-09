@@ -11,7 +11,7 @@ interface Subject {
 
 interface Question {
   question: string;
-  type: string;
+  type: "mc" | "id";
   choices?: string[];
   answer: string;
 }
@@ -27,7 +27,7 @@ interface Quiz {
 
 export default function InstructorEditQuiz() {
   const navigate = useNavigate();
-  const { quizId } = useParams(); // get quizId from route
+  const { id: quizId } = useParams();
   const instructorName = localStorage.getItem("instructorName") || "";
 
   const [subjects, setSubjects] = useState<Subject[]>([]);
@@ -38,50 +38,70 @@ export default function InstructorEditQuiz() {
   const [questions, setQuestions] = useState<Question[]>([]);
 
   // Fetch subjects
-  const fetchSubjects = async () => {
-    try {
-      const res = await api.get(`/subjects?instructorEmail=${localStorage.getItem("instructorEmail")}`);
-      setSubjects(res.data);
-      if (res.data.length > 0) setSelectedSubject(res.data[0].code);
-    } catch (err) {
-      console.error("Failed to fetch subjects", err);
-    }
-  };
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        const res = await api.get(`/subjects?instructorEmail=${localStorage.getItem("instructorEmail")}`);
+        setSubjects(res.data);
+        if (res.data.length > 0 && !selectedSubject) setSelectedSubject(res.data[0].code);
+      } catch (err) {
+        console.error("Failed to fetch subjects", err);
+      }
+    };
+    fetchSubjects();
+  }, []);
 
   // Fetch quiz data
-  const fetchQuiz = async () => {
-    if (!quizId) return;
-    try {
-      const res = await api.get(`/quizzes/${quizId}`);
-      const quiz: Quiz = res.data;
-      setTitle(quiz.title);
-      setDescription(quiz.description || "");
-      setDeadline(quiz.deadline);
-      setSelectedSubject(quiz.subject_code);
-      setQuestions(quiz.questions);
-    } catch (err) {
-      console.error("Failed to fetch quiz", err);
-      alert("Failed to load quiz data");
-      navigate("/instructor/quizzes");
-    }
-  };
-
   useEffect(() => {
-    fetchSubjects();
+    const fetchQuiz = async () => {
+      if (!quizId) return;
+      try {
+        const res = await api.get(`/quizzes/edit/${quizId}`);
+        const quiz: Quiz = res.data;
+
+        setTitle(quiz.title);
+        setDescription(quiz.description || "");
+        setSelectedSubject(quiz.subject_code);
+
+        // Convert deadline from "1-25-2026" to "2026-01-25" for date input
+        if (quiz.deadline) {
+          const [month, day, year] = quiz.deadline.split('-');
+          const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+          setDeadline(formattedDate);
+        }
+
+        // Ensure choices exist for mc questions
+        const fixedQuestions = quiz.questions.map((q) => ({
+          ...q,
+          type: q.type || "mc",
+          choices: q.choices || ["", ""],
+        }));
+        setQuestions(fixedQuestions);
+      } catch (err) {
+        console.error("Failed to fetch quiz", err);
+        alert("Failed to load quiz data");
+        navigate("/instructor/quizzes");
+      }
+    };
     fetchQuiz();
   }, [quizId]);
 
   const addQuestion = () => {
-    setQuestions([...questions, { question: "", type: "mc", choices: ["", ""], answer: "" }]);
+    setQuestions((prev) => [
+      ...prev,
+      { question: "", type: "mc", choices: ["", ""], answer: "" },
+    ]);
   };
 
   const addChoice = (qIndex: number) => {
-    const copy = [...questions];
-    copy[qIndex].choices?.push("");
-    setQuestions(copy);
+    setQuestions((prev) => {
+      const copy = [...prev];
+      if (!copy[qIndex].choices) copy[qIndex].choices = [];
+      copy[qIndex].choices.push("");
+      return copy;
+    });
   };
 
-  // Handle quiz update
   const handleUpdate = async () => {
     if (!title || !deadline || !selectedSubject || questions.length === 0) {
       alert("Please complete all quiz fields");
@@ -89,7 +109,7 @@ export default function InstructorEditQuiz() {
     }
 
     try {
-      const res = await api.put(`/quizzes/${quizId}`, {
+      await api.put(`/quizzes/${quizId}`, {
         title,
         description,
         deadline,
@@ -98,10 +118,8 @@ export default function InstructorEditQuiz() {
         questions,
       });
 
-      if (res.data.message === "Quiz updated successfully") {
-        alert("Quiz updated!");
-        navigate("/instructor/quizzes");
-      }
+      alert("Quiz updated successfully!");
+      navigate("/instructor/quizzes");
     } catch (err) {
       console.error("Failed to update quiz", err);
       alert("Failed to update quiz");
@@ -112,7 +130,6 @@ export default function InstructorEditQuiz() {
     <div className="p-10 bg-[#87FDA8] w-150 text-black rounded-2xl shadow-md absolute top-20 left-3/5 transform -translate-x-2/4">
       <h1 className="text-2xl font-bold mb-4">Edit Quiz</h1>
 
-      {/* Subject selection */}
       <label className="font-medium mb-1 block">Select Subject</label>
       <select
         value={selectedSubject}
@@ -140,7 +157,6 @@ export default function InstructorEditQuiz() {
         onChange={(e) => setDescription(e.target.value)}
       />
 
-      {/* Deadline */}
       <label className="font-medium mb-1 block">Deadline</label>
       <input
         type="date"
@@ -149,7 +165,6 @@ export default function InstructorEditQuiz() {
         onChange={(e) => setDeadline(e.target.value)}
       />
 
-      {/* Questions */}
       {questions.map((q, i) => (
         <div key={i} className="bg-white p-4 rounded-lg border-2 mb-4">
           <input
@@ -168,7 +183,7 @@ export default function InstructorEditQuiz() {
             value={q.type}
             onChange={(e) => {
               const copy = [...questions];
-              copy[i].type = e.target.value;
+              copy[i].type = e.target.value as "mc" | "id";
               setQuestions(copy);
             }}
           >
@@ -177,7 +192,7 @@ export default function InstructorEditQuiz() {
           </select>
 
           {q.type === "mc" &&
-            q.choices?.map((choice: string, ci: number) => (
+            q.choices?.map((choice, ci) => (
               <div key={ci} className="flex gap-2 mb-1">
                 <input
                   className="flex-1 border-2 rounded p-2"

@@ -13,6 +13,7 @@ export default function StudentLogin() {
       const res = await api.post("/students/login", { email, password });
       if (res.data.message === "Login successful") {
         localStorage.setItem("studentLoggedIn", "true");
+        localStorage.setItem("studentEmail", email);
         navigate("/student");
       } else {
         alert("Invalid credentials");
