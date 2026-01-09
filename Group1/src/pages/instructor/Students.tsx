@@ -69,11 +69,11 @@ export default function Students() {
   }, [selectedSubject]);
 
   return (
-    <div className="ml-60 text-black flex flex-col h-screen">
+    <div className="flex flex-col h-screen">
       <h1 className="bg-[#FEFFF4] text-3xl text-black font-extrabold font-sans p-9">
         Students
       </h1>
-      <hr className="h-0.5 w-15/16 bg-black self-center" />
+      <hr className="h-1 w-full bg-black" />
 
       <div className="flex-1 grid xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 gap-40 my-15 mx-30">
         {/* NUMBER OF STUDENTS PANEL */}
@@ -132,7 +132,7 @@ export default function Students() {
             <select
               value={selectedSubject}
               onChange={(e) => setSelectedSubject(e.target.value)}
-              className="border-2 rounded p-2"
+              className="border-2 rounded p-2 border-black color-black text-black"
             >
               {subjects.map((s) => (
                 <option key={s.id} value={s.code}>

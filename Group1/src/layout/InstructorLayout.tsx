@@ -3,10 +3,10 @@ import InstructorSidebar from "@/components/instructor/InstructorSidebar";
 
 export default function InstructorLayout() {
 	return (
-		<div className="flex h-screen">
+		<div className="flex">
 			<InstructorSidebar />
 
-      <main className="flex-1">
+      <main className="flex-1 h-screen">
         <Outlet />
       </main>
     </div>
