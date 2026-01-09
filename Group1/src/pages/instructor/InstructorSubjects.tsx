@@ -80,7 +80,7 @@ export default function InstructorSubjectsPage() {
 
 					<button
 						onClick={() => setShowForm(!showForm)}
-						className=" bg-[#87FDA8] hover:bg-emerald-400 border-2 border-black text-black font-sans px-4 py-2 rounded-lg font-semibold"
+						className=" bg-[#87FDA8] hover:bg-emerald-400 cursor-pointer border-2 border-black text-black font-sans px-4 py-2 rounded-lg font-semibold"
 					>
 						{showForm ? "Cancel" : "Add Subject"}
 					</button>
@@ -95,7 +95,7 @@ export default function InstructorSubjectsPage() {
 					) : (
 						<ul className="max-h-full overflow-y-auto text-black p-2 pb-4 grid grid-cols-3">
 							{subjects.map((s) => (
-<li
+								<li
 									key={s.id}
 									className="p-3 m-2 border-2 bg-[#87FDA8] rounded-2xl shadow hover:shadow-lg transition relative"
 								>
@@ -111,7 +111,7 @@ export default function InstructorSubjectsPage() {
 												</p>
 											</div>
 										</div>
-										
+
 										{/* Bottom row: Description on left, buttons on right */}
 										<div className="flex justify-between items-end flex-1">
 											<div className="text-left flex-1">
@@ -131,7 +131,7 @@ export default function InstructorSubjectsPage() {
 														setShowForm(true);
 														setEditingId(s.id); // track which subject is being edited
 													}}
-													className="bg-white text-black rounded border-2 border-black hover:bg-green-100 text-sm px-2 py-1"
+													className="bg-white text-black rounded border-2 border-black cursor-pointer hover:bg-green-100 text-sm px-2 py-1"
 												>
 													Edit
 												</button>
@@ -151,7 +151,7 @@ export default function InstructorSubjectsPage() {
 															console.error("Failed to delete", err);
 														}
 													}}
-													className="bg-red-500 text-white rounded border-2 border-black hover:bg-red-700 text-sm px-2 py-1"
+													className="bg-red-500 text-white rounded border-2 border-black cursor-pointer hover:bg-red-700 text-sm px-2 py-1"
 												>
 													Delete
 												</button>

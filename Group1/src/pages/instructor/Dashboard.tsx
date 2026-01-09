@@ -99,7 +99,7 @@ export default function InstructorDashboard() {
 			<hr className="h-1 w-full bg-black" />
 
 			{/* TOP PART */}
-			<div className="flex-1 grid xl:grid-cols-3 bg-white justify-center items-center gap-4 my-4 mx-20 p-1 h-[260px] rounded-2xl shadow-lg divide-x-2 divide-black">
+			<div className="flex-1 grid xl:grid-cols-3 bg-white justify-center items-center gap-4 my-4 mx-20 p-1 h-2/7 rounded-2xl shadow-lg divide-x-2 divide-black font-sans font-bold">
 				<StatBlob value={totalQuizzes} label="Total Quizzes Created" />
 				<StatBlob value={uncheckedQuizzes} label="Unchecked Quizzes" />
 				<StatBlob
@@ -155,7 +155,7 @@ export default function InstructorDashboard() {
 								))}
 							</ul>
 							{/* Fade overlay at bottom */}
-							<div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+							<div className="absolute bottom-0 left-0 right-0 h-12 bg-linear-to-t from-white to-transparent pointer-events-none"></div>
 						</div>
 					</div>
 				</div>

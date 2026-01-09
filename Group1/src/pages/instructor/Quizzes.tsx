@@ -144,10 +144,12 @@ export default function InstructorQuizzes() {
 
 			<div className="bg-white flex flex-col w-3/4 h-3/4 mx-auto my-auto pb-4 rounded-lg shadow-lg overflow-hidden">
 				<div className="flex justify-between items-center m-4">
-					<p className="font-bold text-2xl text-black">{quizzes.length} Quizzes</p>
+					<p className="font-bold text-2xl text-black">
+						{quizzes.length} Quizzes
+					</p>
 					<button
 						onClick={() => navigate("/instructor/quizzes/create")}
-						className="bg-[#87FDA8] text-black border-2 border-black px-4 py-2 rounded-lg font-semibold hover:bg-emerald-400"
+						className="bg-[#87FDA8] text-black border-2 border-black px-4 py-2 rounded-lg font-semibold hover:bg-emerald-400 cursor-pointer"
 					>
 						+ Add Quiz
 					</button>
@@ -160,7 +162,7 @@ export default function InstructorQuizzes() {
 					) : quizzes.length === 0 ? (
 						<p className="text-black text-center">No quizzes found.</p>
 					) : (
-						<div className="grid grid-cols-3 gap-4 m-4 text-black overflow-y-auto max-h-full ">
+						<div className="grid grid-cols-3 gap-4 m-4 text-black overflow-y-auto max-h-full">
 							{quizzes.map((quiz) => {
 								const quizId = quiz.id || quiz._id;
 								if (!quizId) return null;
@@ -177,14 +179,14 @@ export default function InstructorQuizzes() {
 													navigate(`/instructor/quizzes/edit/${quizId}`)
 												}
 												title="Edit Quiz"
-												className="hover:bg-black/10 rounded p-1"
+												className="hover:bg-black/10 rounded p-1 cursor-pointer"
 											>
 												<Edit2 size={20} color="black" />
 											</button>
 											<button
 												onClick={() => handleDelete(quiz)}
 												title="Delete Quiz"
-												className="hover:bg-black/10 rounded p-1"
+												className="hover:bg-black/10 rounded p-1 cursor-pointer"
 											>
 												<Trash2 size={20} color="black" />
 											</button>
@@ -219,13 +221,13 @@ export default function InstructorQuizzes() {
 													<>
 														<button
 															onClick={() => handleShowDetails(quizId)}
-															className="bg-blue-300 border border-black text-black font-semibold px-2 py-2 rounded text-xs hover:bg-blue-400"
+															className="bg-blue-300 border border-black text-black font-semibold px-2 py-2 rounded text-xs hover:bg-blue-400 cursor-pointer"
 														>
 															View Details
 														</button>
 														<button
 															onClick={() => handleReleaseScore(quiz)}
-															className="bg-[#87FDA8] border border-black text-black font-semibold px-2 py-2 rounded text-xs hover:bg-green-400"
+															className="bg-[#87FDA8] border border-black text-black font-semibold px-2 py-2 rounded text-xs hover:bg-green-400 cursor-pointer"
 														>
 															Release Score
 														</button>
@@ -285,7 +287,7 @@ export default function InstructorQuizzes() {
 
 							<button
 								onClick={() => setShowModal(false)}
-								className="w-full mt-6 bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400 font-semibold"
+								className="w-full mt-6 bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400 cursor-pointer font-semibold"
 							>
 								Close
 							</button>

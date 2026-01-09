@@ -3,10 +3,10 @@ import StudentSidebar from "@/components/student/StudentSidebar";
 
 export default function StudentLayout() {
   return (
-    <div className="flex h-screen">
+    <div className="flex">
       <StudentSidebar />
 
-      <main className="flex-1 p-6 bg-[#FCFDE8] overflow-auto">
+      <main className="flex-1 h-screen">
         <Outlet />
       </main>
     </div>

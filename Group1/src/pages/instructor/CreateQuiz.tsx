@@ -96,7 +96,7 @@ export default function InstructorCreateQuiz() {
   };
 
   return (
-    <div className="p-10 bg-[#87FDA8] w-150 text-black rounded-2xl shadow-md absolute top-20 left-3/5 transform -translate-x-2/4">
+    <div className="p-6 bg-[#87FDA8] w-3/6 max-w-2xl text-black rounded-2xl shadow-md mx-auto mt-8 mb-8 max-h-[calc(100vh-4rem)] overflow-y-auto">
       <h1 className="text-2xl font-bold mb-4">Create Quiz</h1>
 
       <label className="font-medium mb-1 block">Select Subject</label>
@@ -165,8 +165,8 @@ export default function InstructorCreateQuiz() {
   placeholder="Enter number of allowed tab switches"
 />
 
-      {questions.map((q, i) => (
-        <div key={i} className="bg-white p-4 rounded-lg border-2 mb-4">
+{questions.map((q, i) => (
+          <div key={i} className="bg-white p-4 rounded-lg border-2 mb-4">
           <input
             className="w-full border-2 rounded p-2 mb-2"
             placeholder="Question"
@@ -229,7 +229,7 @@ export default function InstructorCreateQuiz() {
               setQuestions(copy);
             }}
           />
-        </div>
+</div>
       ))}
 
       <button
