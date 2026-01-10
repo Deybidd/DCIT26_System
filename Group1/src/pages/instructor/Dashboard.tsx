@@ -10,6 +10,16 @@ export default function InstructorDashboard() {
 	const [reminders, setReminders] = useState<any[]>([]);
 	const [loading, setLoading] = useState(true);
 
+	const pastelColors = [
+  "bg-green-200",
+  "bg-pink-200",
+  "bg-orange-200",
+  "bg-blue-200",
+  "bg-red-200",
+  "bg-purple-200",
+];
+
+
 	useEffect(() => {
 		const fetchDashboard = async () => {
 			if (!instructorEmail) return;
@@ -92,14 +102,14 @@ export default function InstructorDashboard() {
 	}
 
 	return (
-		<div className="flex-col h-screen">
+		<div className="ml-60 flex-col h-screen">
 			<h1 className="bg-[#FEFFF4] font-sans text-3xl text-black font-extrabold p-9">
 				Instructor Dashboard
 			</h1>
 			<hr className="h-1 w-full bg-black" />
 
 			{/* TOP PART */}
-			<div className="flex-1 grid xl:grid-cols-3 bg-white justify-center items-center gap-4 my-4 mx-20 p-1 h-2/7 rounded-2xl shadow-lg divide-x-2 divide-black font-sans font-bold">
+			<div className="flex-1 grid xl:grid-cols-3 bg-white justify-center items-center gap-4 my-4 mx-20 p-1 h-2/6 rounded-2xl shadow-lg divide-x-2 divide-black font-sans font-bold">
 				<StatBlob value={totalQuizzes} label="Total Quizzes Created" />
 				<StatBlob value={uncheckedQuizzes} label="Unchecked Quizzes" />
 				<StatBlob
@@ -109,12 +119,12 @@ export default function InstructorDashboard() {
 			</div>
 
 			{/* BOTTOM PART */}
-			<div className="flex-1 h-1/2 font-sans grid xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 justify-center gap-20 my-10 mx-30 p-4">
+			<div className="flex-1 h-2/8 font-sans grid xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 justify-center gap-20 my-10 mx-30 p-4">
 				{/* SCHEDULED QUIZZES */}
 				<div className="flex flex-col text-black">
 					<h1 className="pb-4 font-bold text-2xl">Scheduled Quizzes</h1>
 
-					<div className="flex flex-col bg-white rounded-2xl p-2 shadow-lg overflow-hidden h-full relative">
+					<div className="flex flex-col bg-white rounded-2xl p-2 shadow-lg overflow-hidden  relative">
 						<div className="flex text-sm justify-between px-5 pt-3 pb-2 border-b">
 							<h1 className="font-bold">
 								No. of Scheduled: {scheduledQuizzes.length}
@@ -131,15 +141,12 @@ export default function InstructorDashboard() {
 								{scheduledQuizzes.slice(0, 3).map((q, index) => (
 									<li
 										key={q._id || q.id}
-										className={`grid grid-cols-1 gap-2 p-3 w-full rounded shadow-sm border-l-4 ${
-											index % 2 === 0
-												? "bg-[#FFE6B1] border-[#87FDA8]"
-												: "bg-[#FFA0E4] border-pink-400"
-										}`}
+										className={`grid grid-cols-1 gap-2 p-3 w-full rounded-lg shadow-sm border border-black
+											${pastelColors[index % pastelColors.length]}`}
 									>
 										<div className="flex font-semibold justify-between">
 											<h1 className="font-bold text-lg">{q.title}</h1>
-											<h1 className="font-medium text-xs bg-[#87FDA8] px-3 py-1 rounded-full">
+											<h1 className="font-medium text-xs bg-[#87FDA8] px-3 py-2 rounded-lg border-1 border-black">
 												{new Date(q.deadline).toLocaleDateString()}
 											</h1>
 										</div>
@@ -168,7 +175,7 @@ export default function InstructorDashboard() {
 						<div className="relative">
 							<ul className="grid grid-cols-1 gap-2 p-3">
 								{reminders.slice(0, 3).map((r, i) => (
-									<li key={i} className="flex items-center gap-4">
+									<li key={i} className="flex items-center gap-6">
 										<svg
 											width="32"
 											height="32"
@@ -178,8 +185,8 @@ export default function InstructorDashboard() {
 											className="shrink-0"
 										>
 											<svg
-												width="32"
-												height="32"
+												width="44"
+												height="44"
 												viewBox="0 0 41 41"
 												fill="none"
 												xmlns="http://www.w3.org/2000/svg"
@@ -192,9 +199,9 @@ export default function InstructorDashboard() {
 												/>{" "}
 											</svg>
 										</svg>
-										<div className="grid grid-cols-1">
-											<h1 className="text-base font-semibold">{r.title}</h1>
-											<h1 className="text-sm">⚠️ {r.message}</h1>
+										<div className="grid grid-cols-1 mb-2">
+											<h1 className="text-lg font-semibold">{r.title}</h1>
+											<h1 className="text-sm">{r.message}</h1>
 										</div>
 									</li>
 								))}

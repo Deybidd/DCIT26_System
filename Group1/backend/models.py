@@ -67,7 +67,7 @@ class QuestionCreate(BaseModel):
     choices: List[str] = []
     answer: str
     type: str   # "multiple_choice" | "identification"
-
+ 
 
 class QuizCreate(BaseModel):
     title: str

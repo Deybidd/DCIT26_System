@@ -50,7 +50,6 @@ export default function TakeQuiz() {
         setAnswers(new Array(quizData.questions.length).fill(""));
         if (quizData.timer_minutes) setTimeLeft(quizData.timer_minutes * 60);
 
-        // Check previous attempts
         try {
           const attemptsRes = await api.get("/quizzes/responses", {
             params: { quiz_id: quizId, student_email: studentEmail },
@@ -93,7 +92,6 @@ export default function TakeQuiz() {
       if (quiz.max_tab_switches && tabSwitchCount.current >= quiz.max_tab_switches) {
         tabSwitchLock.current = true;
         setShowTabSwitchModal(true);
-        // Auto-quit after 3 seconds
         setTimeout(() => {
           handleAutoSubmit();
         }, 3000);
@@ -120,7 +118,6 @@ export default function TakeQuiz() {
     if (timeLeft <= 0 && !timeUpLock.current) {
       timeUpLock.current = true;
       setShowTimeUpModal(true);
-      // Auto-submit after 3 seconds
       setTimeout(() => {
         handleAutoSubmit();
       }, 3000);
@@ -144,6 +141,13 @@ export default function TakeQuiz() {
     const copy = [...answers];
     copy[index] = value;
     setAnswers(copy);
+  };
+
+  // -----------------------------
+  // Rich Text Formatting
+  // -----------------------------
+  const applyFormatting = (command: "bold" | "italic" | "underline") => {
+    document.execCommand(command, false, "");
   };
 
   // -----------------------------
@@ -211,27 +215,54 @@ export default function TakeQuiz() {
   if (!quiz) return <p>Loading quiz...</p>;
 
   return (
-    <div className="min-h-screen flex flex-col text-black items-center justify-start p-8">
-      <h1 className="text-3xl font-bold mb-4">{quiz.title}</h1>
-      <p className="mb-6">{quiz.description}</p>
+    <div className="min-h-screen flex font-sans [#FEFFF4] flex-col text-black items-center justify-start p-8">
+      <h1 className="text-3xl font-bold mb-2">{quiz.title}</h1>
+      <p className="text-gray-700 mb-6">{quiz.description}</p>
 
-      {/* Timer Display */}
-      <div className="fixed bottom-6 right-6 flex flex-col items-end space-y-2">
-        {quiz.timer_minutes && (
-          <div className={`font-bold text-2xl ${timeLeft !== null && timeLeft < 60 ? "text-red-600" : "text-blue-600"}`}>
-            Time Left: {Math.floor((timeLeft ?? 0) / 60)
-              .toString()
-              .padStart(1, "0")}
-            :
-            {((timeLeft ?? 0) % 60).toString().padStart(2, "0")}
-          </div>
-        )}
-        {quiz.max_tab_switches && (
-          <div className="font-semibold text-yellow-700 text-lg">
-            Tab Switches: {tabSwitchCountDisplay} / {quiz.max_tab_switches}
-          </div>
-        )}
+      {/* Blob Container with Timer */}
+<div className="fixed -top-2 -right-2 mb-8">
+  {/* SVG Blob */}
+  <svg
+    width="100%"
+    height="auto"
+    viewBox="0 0 286 202"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className="w-full h-auto"
+  >
+    <path
+      d="M263.229 3.5332C274.606 3.53321 280.299 3.68319 283 3.85645V84.5332C283 130.44 282.376 151.666 281.752 165.405C281.192 177.736 280.63 184.117 280.521 196.913C279.977 196.289 279.352 195.623 278.639 194.945C275.441 191.91 270.478 188.606 263.451 187.55C255.711 186.387 248.575 181.052 241.624 173.321C234.689 165.608 228.143 155.748 221.5 145.868C214.893 136.041 208.187 126.19 201.014 118.718C193.851 111.256 186.003 105.932 177.066 105.56C151.365 104.489 125.764 114.834 101.206 122.81C76.4695 130.843 52.7543 136.506 30.0469 126.989C18.4598 122.133 11.1531 115.797 6.83789 108.392C2.51547 100.974 1.10031 92.3228 1.59375 82.6748C2.08787 73.0146 4.49062 62.4454 7.7168 51.2676C10.9438 40.0871 14.9357 28.4801 18.6357 16.5537C20.2921 12.8112 20.3099 9.96682 19.9062 7.81836C19.7104 6.77605 19.4141 5.90636 19.2363 5.32715C19.1829 5.15317 19.1442 5.0149 19.1152 4.90234C19.6451 4.76242 20.5809 4.657 22.1943 4.59473C25.3944 4.47122 30.7115 4.5332 39.5 4.5332C43.9349 4.5332 92.4998 4.28318 143.632 4.0332C194.772 3.78319 248.483 3.5332 263.229 3.5332Z"
+      fill="#87FDA8"
+      stroke="black"
+      strokeWidth="3"
+    />
+  </svg>
+
+  {/* Timer Overlay */}
+  <div className="absolute top-13 -right-8 transform -translate-x-1/2 -translate-y-1/2 text-center">
+             
+    {quiz.timer_minutes && (
+       
+      <div
+        className={`font-bold text-2xl ${
+          timeLeft !== null && timeLeft < 60 ? "text-red-600" : "text-black"
+        }`}
+      >
+         Time Left: {Math.floor((timeLeft ?? 0) / 60)
+          .toString()
+          .padStart(1, "0")}
+        :
+        {((timeLeft ?? 0) % 60).toString().padStart(2, "0")}
       </div>
+    )}
+    {quiz.max_tab_switches && (
+      <div className="font-semibold text-black text-base mt-1">
+        Tab Switches: {tabSwitchCountDisplay} / {quiz.max_tab_switches}
+      </div>
+    )}
+  </div>
+</div>
+
 
       {/* Time Up Modal */}
       {showTimeUpModal && (
@@ -271,34 +302,48 @@ export default function TakeQuiz() {
         </div>
       )}
 
-      <form className="w-full max-w-3xl bg-white p-6 rounded-lg shadow-md">
+      <form className="w-full max-w-3xl">
         {quiz.questions.map((q, i) => (
-          <div key={i} className="mb-6">
-            <p className="font-semibold mb-2">
+          <div
+            key={i}
+            className="bg-white shadow-md rounded-lg p-6 mb-6 border border-gray-200"
+          >
+            <p className="font-semibold text-lg mb-4">
               {i + 1}. {q.question}
             </p>
 
             {q.choices && q.choices.length > 0 ? (
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-3">
                 {q.choices.map((choice, ci) => (
-                  <label key={ci} className="flex items-center gap-2">
+                  <label key={ci} className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="radio"
                       name={`question-${i}`}
                       value={choice}
                       checked={answers[i] === choice}
                       onChange={() => handleAnswerChange(i, choice)}
+                      className="accent-blue-500"
                     />
-                    {choice}
+                    <span className="text-gray-800">{choice}</span>
                   </label>
                 ))}
               </div>
             ) : (
-              <textarea
-                className="border p-2 rounded w-full"
-                value={answers[i]}
-                onChange={(e) => handleAnswerChange(i, e.target.value)}
-              />
+              <div className="border rounded p-3">
+                {/* Rich Text Toolbar */}
+                <div className="mb-2 flex gap-2">
+                  <button type="button" onClick={() => applyFormatting("bold")} className="font-bold border px-2 rounded hover:bg-gray-200">B</button>
+                  <button type="button" onClick={() => applyFormatting("italic")} className="italic border px-2 rounded hover:bg-gray-200">I</button>
+                  <button type="button" onClick={() => applyFormatting("underline")} className="underline border px-2 rounded hover:bg-gray-200">U</button>
+                </div>
+                {/* Editable div */}
+                <div
+                  contentEditable
+                  className="min-h-[100px] w-full p-2 border rounded focus:outline-none"
+                  onInput={(e) => handleAnswerChange(i, (e.target as HTMLDivElement).innerHTML)}
+                  dangerouslySetInnerHTML={{ __html: answers[i] }}
+                />
+              </div>
             )}
           </div>
         ))}
@@ -307,14 +352,14 @@ export default function TakeQuiz() {
           <button
             type="button"
             onClick={handleQuit}
-            className="bg-gray-300 px-6 py-2 rounded border-2"
+            className="bg-red-300 font-medium px-6 py-2 rounded border-2 hover:bg-red-400"
           >
             Quit
           </button>
           <button
             type="button"
             onClick={handleSubmit}
-            className="bg-green-500 text-white px-6 py-2 rounded"
+            className="bg-[#87FDA8] font-medium text-black border-1 border-black px-6 py-2 rounded hover:bg-green-300"
           >
             Submit Quiz
           </button>

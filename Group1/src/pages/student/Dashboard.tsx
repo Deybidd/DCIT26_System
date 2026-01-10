@@ -71,7 +71,7 @@ export default function Dashboard() {
 	}, [studentEmail]);
 
 	return (
-		<div className="flex-col h-screen">
+		<div className="ml-60 flex-col h-screen">
 			<h1 className="bg-[#FEFFF4] font-sans text-3xl text-black font-extrabold p-9 w-full">
 				Dashboard
 			</h1>

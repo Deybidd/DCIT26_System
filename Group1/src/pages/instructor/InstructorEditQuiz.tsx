@@ -127,7 +127,7 @@ export default function InstructorEditQuiz() {
   };
 
   return (
-		<div className="p-6 bg-[#87FDA8] w-3/6 max-w-2xl text-black rounded-2xl shadow-md mx-auto mt-8 mb-8 max-h-[calc(100vh-4rem)] overflow-y-auto">
+		<div className="mr-70 p-6 bg-[#87FDA8] w-3/6 max-w-2xl text-black rounded-2xl shadow-md mx-auto mt-8 mb-8 max-h-[calc(100vh-4rem)] overflow-y-auto">
 			<h1 className="text-2xl font-bold mb-4">Edit Quiz</h1>
 
 			<label className="font-medium mb-1 block">Select Subject</label>

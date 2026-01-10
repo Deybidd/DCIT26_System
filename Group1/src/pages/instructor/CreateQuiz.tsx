@@ -26,8 +26,8 @@ export default function InstructorCreateQuiz() {
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [timerMinutes, setTimerMinutes] = useState<number>(0); // NEW: Timer state
-  const [maxAttempts, setMaxAttempts] = useState<number>(0); // number of attempts
+  const [timerMinutes, setTimerMinutes] = useState<number>(1); // NEW: Timer state
+  const [maxAttempts, setMaxAttempts] = useState<number>(1); // number of attempts
   const [maxTabSwitches, setMaxTabSwitches] = useState<number>(0);
 
   useEffect(() => {
@@ -60,10 +60,24 @@ export default function InstructorCreateQuiz() {
   };
 
   const handlePublish = async () => {
-    if (!title || !deadline || !selectedSubject || questions.length === 0) {
-      alert("Please complete all quiz fields");
-      return;
-    }
+    if (
+  !title ||
+  !description ||
+  !deadline ||
+  !selectedSubject ||
+  timerMinutes <= 0 ||
+  maxAttempts < 1 ||
+  questions.length === 0 ||
+  questions.some(
+    (q) =>
+      !q.question ||
+      !q.answer ||
+      (q.type === "mc" && q.choices.some((c) => !c.trim()))
+  )
+) {
+  alert("Please complete all required fields.");
+  return;
+}
 
     try {
       const date = new Date(deadline);
@@ -96,11 +110,12 @@ export default function InstructorCreateQuiz() {
   };
 
   return (
-    <div className="p-6 bg-[#87FDA8] w-3/6 max-w-2xl text-black rounded-2xl shadow-md mx-auto mt-8 mb-8 max-h-[calc(100vh-4rem)] overflow-y-auto">
+    <div className="mr-70 p-6 bg-[#87FDA8] w-3/6 max-w-2xl text-black rounded-2xl shadow-md mx-auto mt-8 mb-8 max-h-[calc(100vh-4rem)] overflow-y-auto">
       <h1 className="text-2xl font-bold mb-4">Create Quiz</h1>
 
       <label className="font-medium mb-1 block">Select Subject</label>
       <select
+        required
         value={selectedSubject}
         onChange={(e) => setSelectedSubject(e.target.value)}
         className="border-2 p-2 rounded mb-3 w-full bg-white"
@@ -112,7 +127,8 @@ export default function InstructorCreateQuiz() {
         ))}
       </select>
 
-      <input
+      <input 
+        required
         className="w-full border-2 p-2 mb-3 rounded bg-white"
         placeholder="Quiz Title"
         value={title}
@@ -120,6 +136,7 @@ export default function InstructorCreateQuiz() {
       />
 
       <textarea
+        required
         className="w-full border-2 p-2 mb-3 rounded bg-white"
         placeholder="Description"
         value={description}
@@ -128,6 +145,7 @@ export default function InstructorCreateQuiz() {
 
       <label className="font-medium mb-1 block">Deadline</label>
       <input
+        required
         type="date"
         className="border-2 p-2 rounded mb-3 w-full bg-white"
         style={{ colorScheme: "black" }}
@@ -137,20 +155,22 @@ export default function InstructorCreateQuiz() {
 
       <label className="font-medium mb-1 block">Timer (Minutes)</label>
       <input
+        required
         type="number"
-        min={0}
+        min={1}
         value={timerMinutes}
-        onChange={(e) => setTimerMinutes(Number(e.target.value))}
+        onChange={(e) => setTimerMinutes(Math.max(1, Number(e.target.value)))}
         className="border-2 p-2 rounded mb-6 w-full bg-white"
         placeholder="Enter timer in minutes"
       />
 
       <label className="font-medium mb-1 block">Maximum Attempts (Optional)</label>
 <input
+  required
   type="number"
-  min={0}
+  min={1}
   value={maxAttempts}
-  onChange={(e) => setMaxAttempts(Number(e.target.value))}
+  onChange={(e) => setMaxAttempts(Math.max(1, Number(e.target.value)))}
   className="border-2 p-2 rounded mb-3 w-full bg-white"
   placeholder="Enter max attempts for this quiz"
 />
@@ -168,6 +188,7 @@ export default function InstructorCreateQuiz() {
 {questions.map((q, i) => (
           <div key={i} className="bg-white p-4 rounded-lg border-2 mb-4">
           <input
+            required
             className="w-full border-2 rounded p-2 mb-2"
             placeholder="Question"
             value={q.question}
@@ -179,6 +200,7 @@ export default function InstructorCreateQuiz() {
           />
 
           <select
+            required
             className="border-2 rounded p-2 mb-2"
             value={q.type}
             onChange={(e) => {
@@ -195,6 +217,7 @@ export default function InstructorCreateQuiz() {
             <>
               {q.choices.map((choice, ci) => (
                 <input
+                  required
                   key={ci}
                   className="w-full border-2 rounded p-2 mb-1"
                   placeholder={`Choice ${ci + 1}`}
@@ -220,6 +243,7 @@ export default function InstructorCreateQuiz() {
           )}
 
           <input
+            required
             className="w-full border-2 rounded p-2 mt-2"
             placeholder="Correct Answer"
             value={q.answer}
@@ -233,6 +257,7 @@ export default function InstructorCreateQuiz() {
       ))}
 
       <button
+        
         type="button"
         onClick={addQuestion}
         className="bg-white px-4 py-2 rounded border-2 mr-3"

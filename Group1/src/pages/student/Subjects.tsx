@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { api } from "@/api/api";
+import { User, Book, Users } from "lucide-react"; // icons
 
 interface InstructorSubject {
 	id: string;
 	name: string;
 	code: string;
 	description?: string;
-	number_of_students: number; // this is supposed to count enrolled students
+	number_of_students: number;
 	instructor_email: string;
 	students: string[];
 }
@@ -16,9 +17,7 @@ export default function StudentSubjects() {
 	const [subjects, setSubjects] = useState<InstructorSubject[]>([]);
 	const [enrollCode, setEnrollCode] = useState("");
 	const [message, setMessage] = useState("");
-	const [messageType, setMessageType] = useState<"success" | "error">(
-		"success"
-	);
+	const [messageType, setMessageType] = useState<"success" | "error">("success");
 	const [studentData, setStudentData] = useState<any>(null);
 
 	// Fetch all subjects
@@ -46,102 +45,85 @@ export default function StudentSubjects() {
 		fetchStudentData();
 	}, []);
 
-	// Handle unenroll
-	const handleUnenroll = async (subjectId: string, subjectName: string) => {
-		if (!studentData?.studentNumber) {
-			setMessage("Unable to unenroll: Student data not loaded");
-			setMessageType("error");
-			return;
-		}
-
-		try {
-			await api.put(`/subjects/unenroll/${subjectId}`, {
-				student_id: studentData.studentNumber,
-			});
-			setMessage(`Successfully unenrolled from ${subjectName}`);
-			setMessageType("success");
-			fetchSubjects(); // refresh subjects list
-		} catch (err: any) {
-			console.error(err);
-			setMessage(err.response?.data?.detail || "Failed to unenroll.");
-			setMessageType("error");
-		}
-	};
-	// Handle enrollment by code
+	// Enroll student by code
 	const handleEnroll = async () => {
-		if (!enrollCode) {
-			setMessage("Please enter a subject code.");
-			setMessageType("error");
-			return;
-		}
-
-		if (!studentData?.studentNumber) {
-			setMessage("Unable to enroll: Student data not loaded");
-			setMessageType("error");
-			return;
-		}
+		if (!enrollCode) return setMessage("Please enter a subject code."), setMessageType("error");
+		if (!studentData?.studentNumber)
+			return setMessage("Student data not loaded."), setMessageType("error");
 
 		try {
 			const subject = subjects.find((s) => s.code === enrollCode);
-
-			if (!subject) {
-				setMessage("Subject code not found.");
-				setMessageType("error");
-				return;
-			}
-			if (subject.students.includes(studentData.studentNumber)) {
-				setMessage("Already enrolled.");
-				setMessageType("error");
-				return;
-			}
-			if (subject.number_of_students >= 60) {
-				setMessage("This subject is full.");
-				setMessageType("error");
-				return;
-			}
+			if (!subject) return setMessage("Subject code not found."), setMessageType("error");
+			if (subject.students.includes(studentData.studentNumber))
+				return setMessage("Already enrolled."), setMessageType("error");
+			if (subject.number_of_students >= 60)
+				return setMessage("This subject is full."), setMessageType("error");
 
 			await api.put(`/subjects/enroll/${subject.id}`, {
 				student_id: studentData.studentNumber,
 			});
-
 			setMessage(`Successfully enrolled in ${subject.name}!`);
 			setMessageType("success");
 			setEnrollCode("");
 			fetchSubjects();
 		} catch (err: any) {
-			console.error(err);
 			setMessage(err.response?.data?.detail || "Failed to enroll.");
 			setMessageType("error");
 		}
 	};
 
-	return (
-		<div className="flex-col h-screen font-sans overflow-y-auto">
-			<h1 className="bg-[#FEFFF4] font-sans text-3xl text-black font-extrabold p-8 w-full">
-				My Subjects
-			</h1>
-			<hr className="h-1 w-full bg-black" />
+	// Unenroll student
+	const handleUnenroll = async (subjectId: string, subjectName: string) => {
+		if (!studentData?.studentNumber)
+			return setMessage("Student data not loaded."), setMessageType("error");
 
-			{/* Enrollment Section */}
-			<div className="p-10 mx-auto my-4 text-black bg-white border-2 border-black rounded-lg shadow flex flex-col w-150 gap-2">
-				<h2 className="font-semibold">Enroll in a Subject</h2>
-				<input
-					type="text"
-					placeholder="Enter subject code"
-					value={enrollCode}
-					onChange={(e) => setEnrollCode(e.target.value)}
-					className="border-2 border-black p-2 rounded-lg w-full"
-				/>
-				<button
-					onClick={handleEnroll}
-					className="bg-[#87FDA8] cursor-pointer font-semibold border-2 border-black text-black p-2 rounded-lg hover:bg-green-400 mt-1"
-				>
-					Enroll
-				</button>
+		try {
+			await api.put(`/subjects/unenroll/${subjectId}`, {
+				student_id: studentData.studentNumber,
+			});
+			setMessage(`Unenrolled from ${subjectName}`);
+			setMessageType("success");
+			fetchSubjects();
+		} catch (err: any) {
+			setMessage(err.response?.data?.detail || "Failed to unenroll.");
+			setMessageType("error");
+		}
+	};
+
+	// Filter enrolled subjects
+	const enrolledSubjects = subjects.filter(
+		(s) => studentData?.studentNumber && s.students.includes(studentData.studentNumber)
+	);
+
+	return (
+		<div className="ml-60 text-black flex flex-col h-screen overflow-y-auto font-sans p-6">
+			<h1 className="bg-[#FEFFF4] text-3xl font-extrabold p-6 w-full">My Subjects</h1>
+			<hr className="h-1 w-full bg-black mb-6" />
+
+			{/* Enrollment Panel */}
+			<div className="bg-white p-6 rounded-lg border-2 border-black shadow-md max-w-2xl mx-auto mb-6">
+				<h2 className="flex items-center gap-2 font-semibold text-lg mb-2">
+					<Book size={20} /> Enroll in a Subject
+				</h2>
+				<div className="flex flex-col sm:flex-row gap-2">
+					<input
+						type="text"
+						placeholder="Enter subject code"
+						value={enrollCode}
+						onChange={(e) => setEnrollCode(e.target.value)}
+						className="border-2 border-black rounded-lg p-2 flex-1"
+					/>
+					<button
+						onClick={handleEnroll}
+						className="bg-[#87FDA8] border-2 border-black rounded-lg p-2 font-semibold hover:bg-green-400"
+					>
+						Enroll
+					</button>
+				</div>
 				{message && (
 					<p
-						className={`text-sm font-semibold mt-1 ${
-							messageType === "success" ? "text-green-500" : "text-red-500"
+						className={`mt-2 font-semibold ${
+							messageType === "success" ? "text-green-600" : "text-red-600"
 						}`}
 					>
 						{message}
@@ -149,62 +131,52 @@ export default function StudentSubjects() {
 				)}
 			</div>
 
-			{/* Enrolled Subjects */}
-			{subjects.filter(
-				(s) =>
-					studentData?.studentNumber &&
-					s.students.includes(studentData.studentNumber)
-			).length === 0 ? (
-				<p>You are not enrolled in any subjects yet.</p>
-			) : (
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 m-4">
-					{subjects
-						.filter(
-							(s) =>
-								studentData?.studentNumber &&
-								s.students.includes(studentData.studentNumber)
-						)
-						.map((s) => (
-							<div
-								key={s.id}
-								className="bg-[#FFE7B3] border-2 border-black text-black p-5 w-100 rounded-lg shadow relative"
-							>
-								<h2 className="font-bold text-lg">{s.name}</h2>
-								<p>
-									<span className="font-semibold text-base">Code:</span>{" "}
-									{s.code}
-								</p>
-								<p>
-									<span className="font-semibold text-base">Instructor:</span>{" "}
-									{s.instructor_email}
-								</p>
-								<p>
-									<span className="font-semibold text-base">
-										Students Enrolled:
-									</span>{" "}
-									{s.number_of_students}
-								</p>
-								{s.description && (
-									<p className="text-sm font-regular text-gray-600">
-										{s.description}
-									</p>
-								)}
+			{/* Enrolled Subjects Panel */}
+			{/* Enrolled Subjects Panel */}
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 bg-white p-10 rounded-xl shadow-md h-full">
+  {enrolledSubjects.length === 0 ? (
+    <p className="text-center col-span-full">You are not enrolled in any subjects yet.</p>
+  ) : (
+    enrolledSubjects.map((s) => (
+      <div
+        key={s.id}
+        className="bg-[#FFE7B3] border-1 border-black rounded-lg p-5 shadow-md relative flex flex-col justify-between min-h-[220px] max-h-[240px]"
+      >
+        <div className="overflow-hidden">
+          <h2 className="font-bold text-xl flex items-center gap-1 mb-2 truncate">
+            <Book size={18} /> {s.name}
+          </h2>
+          <p className="flex items-center gap-1 text-sm truncate">
+            <span className="font-semibold">Code:</span> {s.code}
+          </p>
+          <p className="flex items-center gap-1 text-sm truncate">
+            <User size={16} /> <span className="font-semibold">Instructor:</span> {s.instructor_email}
+          </p>
+          <p className="flex items-center gap-1 text-sm">
+            <Users size={16} /> <span className="font-semibold">Students:</span> {s.number_of_students}
+		</p>
+         <p className="text-sm font-regular mt-3 break-words whitespace-normal">
+												{s.description || "No description provided"}
+						</p>
+        </div>
 
-								<span className="absolute top-3 right-3 border-2 border-black bg-green-500 text-white text-xs px-2 py-1 rounded">
-									Enrolled
-								</span>
+        {/* Footer with Unenroll */}
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={() => handleUnenroll(s.id, s.name)}
+            className="bg-red-400/80 text-black border-1 border-black px-4 py-2 rounded hover:bg-red-500 font-semibold text-xs"
+          >
+            Unenroll
+          </button>
+        </div>
 
-								{/* Unenroll Button */}
-								<button
-									onClick={() => handleUnenroll(s.id, s.name)}
-									className="mt-3 bg-red-400/80 text-black border-2 border-black text-sm px-4 font-semibold py-2 rounded cursor-pointer hover:bg-red-400"
-								>
-									Unenroll
-								</button>
-							</div>
-						))}
-				</div>
-			)}
+        <span className="absolute top-3 right-3 bg-green-500 text-white text-xs px-2 py-1 rounded border-1 border-black">
+          Enrolled
+        </span>
+      </div>
+    ))
+  )}
+</div>
 		</div>
 	);
 }

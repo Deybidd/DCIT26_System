@@ -141,7 +141,7 @@ export default function StudentQuizzes() {
   
 
   return (
-		<div className="flex-col font-sans h-screen text-black overflow-y-auto">
+		<div className="ml-60 flex-col font-sans h-screen text-black overflow-y-auto">
 			<h1 className="bg-[#FEFFF4] font-sans text-3xl font-extrabold p-8 w-full">
 				Available Quizzes
 			</h1>
@@ -259,7 +259,7 @@ export default function StudentQuizzes() {
 																</>
 															) : (
 																<span className="text-yellow-600 text-sm font-semibold">
-																	Pending Grade
+																	Pending Score
 																</span>
 															)}
 														</div>

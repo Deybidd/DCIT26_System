@@ -9,7 +9,7 @@ export default function InstructorSidebar() {
 	};
 
   return (
-		<aside className="w-60 bg-[#87FDA8] text-white p-5 flex flex-col justify-between h-screen">
+		<aside className="fixed w-60 bg-[#87FDA8] text-white p-5 flex flex-col justify-between h-screen">
 			<div>
 				<div className="flex items-center justify-center">
 					<img src="/logo/QuizappLogo.svg" alt="" className="w-18 mb-10" />

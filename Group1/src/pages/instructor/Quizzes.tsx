@@ -38,10 +38,17 @@ export default function InstructorQuizzes() {
 	const [responsesMap, setResponsesMap] = useState<Record<string, Response[]>>(
 		{}
 	);
+
+	const pastelColors = [
+  "bg-green-200",
+  "bg-pink-200",
+  "bg-orange-200",
+  "bg-blue-200",
+  "bg-red-200",
+  "bg-purple-200",
+];
 	const [showResponsesFor, setShowResponsesFor] = useState<string | null>(null);
-	const [selectedStudent, setSelectedStudent] = useState<StudentDetail | null>(
-		null
-	);
+
 	const [modalLoading, setModalLoading] = useState(false);
 	const [selectedQuizResponses, setSelectedQuizResponses] = useState<
 		StudentDetail[]
@@ -136,13 +143,14 @@ export default function InstructorQuizzes() {
 	}, []);
 
 	return (
-		<div className="flex flex-col h-screen font-sans">
+		<div className="ml-60 flex flex-col h-screen font-sans">
 			<h1 className="bg-[#FEFFF4] text-black font-sans text-3xl font-extrabold p-9">
 				Quizzes
 			</h1>
 			<hr className="h-1 w-full bg-black" />
 
-			<div className="bg-white flex flex-col w-3/4 h-3/4 mx-auto my-auto pb-4 rounded-lg shadow-lg overflow-hidden">
+			<div className="bg-white p-4 flex flex-col w-5/6 h-3/4 mx-auto my-auto pb-4 rounded-lg shadow-lg overflow-hidden">
+
 				<div className="flex justify-between items-center m-4">
 					<p className="font-bold text-2xl text-black">
 						{quizzes.length} Quizzes
@@ -154,7 +162,7 @@ export default function InstructorQuizzes() {
 						+ Add Quiz
 					</button>
 				</div>
-				<div className="flex-1 overflow-hidden">
+				<div className="flex-1 overflow-hidden overflow-y-auto pr-2">
 					{loading ? (
 						<p>Loading quizzes...</p>
 					) : error ? (
@@ -162,15 +170,16 @@ export default function InstructorQuizzes() {
 					) : quizzes.length === 0 ? (
 						<p className="text-black text-center">No quizzes found.</p>
 					) : (
-						<div className="grid grid-cols-3 gap-4 m-4 text-black overflow-y-auto max-h-full">
-							{quizzes.map((quiz) => {
+						<div className="grid gap-4 m-4 text-black grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
+							{quizzes.map((quiz, index) => {
 								const quizId = quiz.id || quiz._id;
 								if (!quizId) return null;
 								const responses = responsesMap[quizId] || [];
 								return (
 									<div
 										key={quizId}
-										className="p-5 rounded-xl shadow border bg-[#FFE7B3] flex flex-col justify-between relative"
+										className={`p-5 rounded-xl shadow border flex flex-col justify-between relative min-h-[200px] ${pastelColors[index % pastelColors.length]}`}
+
 									>
 										{/* Edit / Delete */}
 										<div className="absolute top-2 right-2 flex gap-2">
@@ -190,13 +199,24 @@ export default function InstructorQuizzes() {
 											>
 												<Trash2 size={20} color="black" />
 											</button>
+											<button
+													onClick={() =>
+														setShowResponsesFor(
+															showResponsesFor === quizId ? null : quizId
+														)
+													}
+													className="flex items-center gap-1 bg-white border px-2 py-1 rounded"
+												>
+													<Users size={14} /> {responses.length}
+												</button>
 										</div>
 
 										<div>
-											<h3 className="font-bold text-2xl">{quiz.title}</h3>
-											<p className="text-sm font-regular mt-3">
+											<h3 className="font-bold text-base -mt-2">{quiz.title}</h3>
+											<p className="text-xs font-regular mt-5 break-words whitespace-normal">
 												{quiz.description || "No description provided"}
-											</p>
+												</p>
+
 										</div>
 
 										{/* Footer */}
@@ -206,16 +226,7 @@ export default function InstructorQuizzes() {
 												<span className="font-medium text-xs">items</span>
 											</span>
 											<div className="flex items-center gap-2">
-												<button
-													onClick={() =>
-														setShowResponsesFor(
-															showResponsesFor === quizId ? null : quizId
-														)
-													}
-													className="flex items-center gap-1 bg-white border px-3 py-1 rounded"
-												>
-													<Users size={14} /> {responses.length}
-												</button>
+												
 
 												{needsGrading[quizId] && (
 													<>
@@ -250,7 +261,7 @@ export default function InstructorQuizzes() {
 								</h2>
 								<button
 									onClick={() => setShowModal(false)}
-									className="text-gray-500 hover:text-gray-700"
+									className="text-black  hover:text-gray-700"
 								>
 									<X size={24} />
 								</button>
@@ -263,21 +274,21 @@ export default function InstructorQuizzes() {
 							) : (
 								<div className="space-y-4">
 									{selectedQuizResponses.map((response: any, idx: number) => (
-										<div key={idx} className="border p-4 rounded bg-gray-50">
+										<div key={idx} className="border p-4 rounded-lg border-1 border-black bg-[#87FDA8]">
 											<p className="font-semibold text-black">
 												{response.student_name}
 											</p>
 											<p className="text-sm text-gray-600">
-												Year/Section: {response.yearSection}
+												<span className="font-semibold text-black">Year/Section: </span>{response.yearSection}
 											</p>
 											<p className="text-sm text-gray-600">
-												Score: {response.correct_count}
+												<span className="font-semibold text-black">Score: </span>{response.correct_count}
 											</p>
 											<p className="text-sm text-gray-600">
-												Penalty Count: {response.tab_switches}
+												<span className="font-semibold text-black">Penalty Count: </span>{response.tab_switches}
 											</p>
 											<p className="text-sm text-gray-600">
-												Submitted:{" "}
+												<span className="font-semibold text-black">Submitted: </span>
 												{new Date(response.submitted_at).toLocaleString()}
 											</p>
 										</div>
@@ -285,12 +296,6 @@ export default function InstructorQuizzes() {
 								</div>
 							)}
 
-							<button
-								onClick={() => setShowModal(false)}
-								className="w-full mt-6 bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400 cursor-pointer font-semibold"
-							>
-								Close
-							</button>
 						</div>
 					</div>
 				)}

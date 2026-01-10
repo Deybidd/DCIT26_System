@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { api } from "@/api/api"; // your Axios instance
 import type { InstructorSubjects } from "@/components/instructor/InstructorSubjects";
+import {Users} from "lucide-react";
 
 export default function InstructorSubjectsPage() {
 	const instructorEmail = localStorage.getItem("instructorEmail") || "";
@@ -14,6 +15,15 @@ export default function InstructorSubjectsPage() {
 	const [showForm, setShowForm] = useState(false);
 	const [message, setMessage] = useState("");
 	const [editingId, setEditingId] = useState<string | null>(null);
+
+	const pastelColors = [
+  "bg-green-200",
+  "bg-pink-200",
+  "bg-orange-200",
+  "bg-blue-200",
+  "bg-red-200",
+  "bg-purple-200",
+];
 
 	// Fetch subjects
 	const fetchSubjects = async () => {
@@ -66,15 +76,16 @@ export default function InstructorSubjectsPage() {
 	};
 
 	return (
-		<div className="flex flex-col h-screen">
+		<div className="ml-60 flex flex-col font-sans h-screen">
 			<h1 className="bg-[#FEFFF4] font-sans text-3xl text-black font-extrabold p-9">
 				Subjects
 			</h1>
 			<hr className="h-1 w-full bg-black" />
 
-			<div className="bg-white flex flex-col w-3/4 h-3/4 pb-4 mx-auto my-auto rounded-lg shadow-lg overflow-hidden">
+			<div className="bg-white flex flex-col w-4/5 h-3/4 pb-4 p-5 mx-auto my-auto rounded-lg shadow-lg overflow-hidden">
+
 				<div className="flex justify-between p-4 shrink-0">
-					<h1 className="text-2xl font-bold font-sans text-black">
+					<h1 className="text-2xl font-bold  text-black">
 						Subject List
 					</h1>
 
@@ -87,17 +98,21 @@ export default function InstructorSubjectsPage() {
 				</div>
 
 				{/* Subject List Container */}
-				<div className="flex-1 overflow-hidden">
+				<div className="flex-1 overflow-y-auto pr-2">
+
 					{subjects.length === 0 ? (
 						<p className="text-black mx-auto my-auto text-center">
 							No subjects found. Click "Add Subject" to create one!
 						</p>
 					) : (
-						<ul className="max-h-full overflow-y-auto text-black p-2 pb-4 grid grid-cols-3">
-							{subjects.map((s) => (
+						<ul className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr mb-4 text-black">
+
+
+							{subjects.map((s, index) => (
 								<li
 									key={s.id}
-									className="p-3 m-2 border-2 bg-[#87FDA8] rounded-2xl shadow hover:shadow-lg transition relative"
+									className={`p-5 border-1 bg-[#87FDA8] rounded-2xl shadow hover:shadow-lg transition flex flex-col min-h-[180px] ${pastelColors[index % pastelColors.length]}`}
+
 								>
 									<div className="flex flex-col h-full">
 										{/* Top row: Name/code on left, student count on right */}
@@ -105,21 +120,26 @@ export default function InstructorSubjectsPage() {
 											<div className="text-left">
 												<strong className="text-lg">{s.name}</strong> ({s.code})
 											</div>
-											<div className="text-right">
-												<p className="text-sm">
-													Students: {s.number_of_students}
+											<div className="flex items-center gap-1 bg-white border px-2 py-1 rounded">
+												<p className="text-sm aboslute flex items-center gap-1">
+													<Users size={14} /> {s.number_of_students}
 												</p>
 											</div>
-										</div>
 
-										{/* Bottom row: Description on left, buttons on right */}
-										<div className="flex justify-between items-end flex-1">
-											<div className="text-left flex-1">
+											
+										</div>
+										<div className="text-left flex-1">
 												{s.description && (
-													<p className="text-sm text-black">{s.description}</p>
+													<p className="text-sm text-black break-words whitespace-normal">{s.description}</p>
 												)}
 											</div>
-											<div className="flex gap-2 ml-2">
+
+										{/* Bottom row: Description on left, buttons on right */}
+										<div className="flex justify-between items-end flex-1 gap-2">
+
+											
+
+											<div className="flex gap-2">
 												<button
 													onClick={() => {
 														setForm({
@@ -131,7 +151,7 @@ export default function InstructorSubjectsPage() {
 														setShowForm(true);
 														setEditingId(s.id); // track which subject is being edited
 													}}
-													className="bg-white text-black rounded border-2 border-black cursor-pointer hover:bg-green-100 text-sm px-2 py-1"
+													className="bg-white text-black font-semibold text-xs rounded border-1 border-black cursor-pointer hover:bg-green-100 px-3 py-2"
 												>
 													Edit
 												</button>
@@ -151,7 +171,7 @@ export default function InstructorSubjectsPage() {
 															console.error("Failed to delete", err);
 														}
 													}}
-													className="bg-red-500 text-white rounded border-2 border-black cursor-pointer hover:bg-red-700 text-sm px-2 py-1"
+													className="bg-red-300 text-black rounded border-1 border-black cursor-pointer hover:bg-red-500 text-xs font-semibold px-3 py-2"
 												>
 													Delete
 												</button>
@@ -165,7 +185,7 @@ export default function InstructorSubjectsPage() {
 				</div>
 
 				{showForm && (
-					<div className="fixed bottom-20 right-6 w-80 bg-[#87FDA8] p-4 border-2 border-black text-black font-sans rounded shadow-md z-50">
+					<div className="fixed bottom-20 right-6 w-80 bg-white p-4 border-2 border-black text-black font-sans rounded-2xl shadow-md z-50">
 						<h2 className="text-lg font-semibold mb-3">Create New Subject</h2>
 						<form onSubmit={handleSubmit} className="flex flex-col gap-3">
 							<div className="flex flex-col">
@@ -202,9 +222,16 @@ export default function InstructorSubjectsPage() {
 									name="description"
 									placeholder="Enter subject description"
 									value={form.description}
-									onChange={handleChange}
-									className="border p-2 rounded resize-none"
-								/>
+									onChange={(e) => {
+										if (e.target.value.length <= 60) handleChange(e);
+									}}
+									maxLength={60}
+									className="border p-2 rounded resize-none"/>
+							
+
+<p className="text-xs text-right text-gray-600 mt-1">
+	{form.description.length}/60
+</p>
 							</div>
 
 							<div className="flex flex-col">
@@ -228,7 +255,7 @@ export default function InstructorSubjectsPage() {
 
 							<button
 								type="submit"
-								className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+								className="bg-[#87FDA8] text-black font-semibold p-2 rounded-lg border-1 border-black hover:bg-green-300"
 							>
 								Create
 							</button>
