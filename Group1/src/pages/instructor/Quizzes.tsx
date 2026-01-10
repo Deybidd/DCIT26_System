@@ -33,7 +33,7 @@ export default function InstructorQuizzes() {
 
 	const [quizzes, setQuizzes] = useState<Quiz[]>([]);
 	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState("");
+	const [error] = useState("");
 	const [needsGrading, setNeedsGrading] = useState<Record<string, boolean>>({});
 	const [responsesMap, setResponsesMap] = useState<Record<string, Response[]>>(
 		{}
